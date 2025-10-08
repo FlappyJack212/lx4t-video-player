@@ -159,5 +159,19 @@ router.put('/profile', authenticateToken, (req, res) => {
     }
 });
 
+// GET /api/auth/profile/:id - Get user profile
+router.get('/profile/:id', (req, res) => {
+    try {
+        const user = User.getProfile(req.params.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.json(user);
+    } catch (error) {
+        console.error('Get profile error:', error);
+        res.status(500).json({ error: 'Failed to get profile' });
+    }
+});
+
 module.exports = { router, authenticateToken };
 

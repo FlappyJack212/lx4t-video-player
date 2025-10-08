@@ -255,6 +255,83 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Load video on page load
+// Comments functionality
+async function loadComments() {
+    if (!videoId) return;
+    
+    try {
+        const response = await fetch(`/api/comments/${videoId}`);
+        const data = await response.json();
+        
+        document.getElementById('commentCount').textContent = data.comments.length;
+        
+        if (data.comments.length > 0) {
+            document.getElementById('commentsList').innerHTML = data.comments.map(c => `
+                <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; margin-bottom: 12px;">
+                    <div style="display: flex; gap: 12px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #ff6600, #ff9500); display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            ${c.username[0].toUpperCase()}
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; gap: 10px; margin-bottom: 5px;">
+                                <strong style="color: #fff;">${escapeHtml(c.username)}</strong>
+                                <span style="color: rgba(255,255,255,0.5); font-size: 0.875rem;">${getTimeAgo(c.createdAt)}</span>
+                            </div>
+                            <p style="color: rgba(255,255,255,0.9); margin: 0;">${escapeHtml(c.text)}</p>
+                            <div style="margin-top: 8px; display: flex; gap: 15px; font-size: 0.875rem;">
+                                <button onclick="likeComment('${c.id}')" style="background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer;">👍 ${c.likes || 0}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            document.getElementById('commentsList').innerHTML = '<p style="color: rgba(255,255,255,0.6); text-align: center;">No comments yet. Be the first!</p>';
+        }
+    } catch (error) {
+        console.error('Error loading comments:', error);
+    }
+}
+
+async function postComment() {
+    const text = document.getElementById('commentInput').value.trim();
+    if (!text) return;
+    
+    try {
+        const response = await fetch('/api/comments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ videoId, text })
+        });
+        
+        if (response.ok) {
+            document.getElementById('commentInput').value = '';
+            loadComments();
+        }
+    } catch (error) {
+        console.error('Error posting comment:', error);
+        alert('Failed to post comment');
+    }
+}
+
+async function likeComment(commentId) {
+    try {
+        await fetch(`/api/comments/${commentId}/like`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        loadComments();
+    } catch (error) {
+        console.error('Error liking comment:', error);
+    }
+}
+
+// Load video and comments on page load
 loadVideo();
+if (videoId) {
+    loadComments();
+}
 

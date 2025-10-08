@@ -138,8 +138,14 @@ router.get('/videos', (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 50;
         const offset = parseInt(req.query.offset) || 0;
+        const creator = req.query.creator;
         
-        const videos = Video.getAll(limit, offset);
+        let videos;
+        if (creator) {
+            videos = Video.getByCreator(creator, limit);
+        } else {
+            videos = Video.getAll(limit, offset);
+        }
         
         res.json({ videos });
     } catch (error) {

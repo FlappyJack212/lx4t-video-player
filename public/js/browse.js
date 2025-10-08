@@ -185,6 +185,42 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+let searchTimeout;
+
+searchInput.addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    const query = e.target.value.trim();
+    
+    if (query.length < 2) {
+        loadVideos();
+        return;
+    }
+    
+    searchTimeout = setTimeout(async () => {
+        try {
+            const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            
+            if (data.videos && data.videos.length > 0) {
+                renderVideos(data.videos);
+            } else {
+                const container = document.getElementById('browseContainer');
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <h3>No results for "${escapeHtml(query)}"</h3>
+                        <p>Try different keywords</p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+        }
+    }, 300);
+});
+
 // Load videos on page load
 loadVideos();
 

@@ -30,9 +30,25 @@ app.use(express.static(__dirname));
 // API Routes
 const { router: authRouter } = require('./server/auth');
 const uploadRouter = require('./server/upload');
+const commentsRouter = require('./server/comments');
 
 app.use('/api/auth', authRouter);
 app.use('/api/upload', uploadRouter);
+app.use('/api/comments', commentsRouter);
+
+// Search endpoint
+app.get('/api/search', (req, res) => {
+    const query = req.query.q;
+    if (!query) return res.json({ videos: [], users: [] });
+    
+    const Video = require('./server/models/Video');
+    const User = require('./server/models/User');
+    
+    const videos = Video.search(query, 20);
+    const users = User.search(query, 10);
+    
+    res.json({ videos, users });
+});
 
 // Store active parties in memory
 const parties = new Map();
