@@ -2480,7 +2480,7 @@ function initializeSocket() {
             lastSync: Date.now()
         };
         showPartyRoom();
-        startHostSync();
+        startSync();
     });
     
     socket.on('party-joined', (party) => {
@@ -2525,7 +2525,7 @@ function initializeSocket() {
         watchParty.isHost = true;
         hostControls.classList.remove('hidden');
         guestNotice.classList.add('hidden');
-        startHostSync();
+        startSync();
         
         showChatNotification('👑 You are now the host!');
     });
