@@ -3067,16 +3067,18 @@ if (uploadToggleBtn && uploadDropdown) {
     });
 }
 
-// Handle URL input from sidebar
-const videoUrlInput = document.getElementById('videoUrl');
-const loadVideoBtn = document.getElementById('loadVideoBtn');
+// Handle URL input from sidebar  
+// Note: videoUrlInput and loadVideoBtn are already declared at the top
 if (loadVideoBtn && videoUrlInput) {
-    loadVideoBtn.addEventListener('click', () => {
+    // Remove old listener if exists
+    const newLoadBtn = loadVideoBtn.cloneNode(true);
+    loadVideoBtn.parentNode.replaceChild(newLoadBtn, loadVideoBtn);
+    
+    newLoadBtn.addEventListener('click', () => {
         const url = videoUrlInput.value.trim();
         if (url) {
-            video.src = url;
-            video.load();
-            video.play();
+            addToPlaylist('Custom Video', url);
+            videoUrlInput.value = '';
         }
     });
 }
