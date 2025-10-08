@@ -44,6 +44,19 @@ const fileInput = document.getElementById('fileInput');
 const uploadBtn = document.getElementById('uploadBtn');
 const uploadProgress = document.getElementById('uploadProgress');
 const progressFillUpload = document.getElementById('progressFillUpload');
+
+// Supported video formats
+const SUPPORTED_FORMATS = {
+    'video/mp4': 'MP4',
+    'video/webm': 'WebM', 
+    'video/ogg': 'OGG',
+    'video/quicktime': 'MOV',
+    'video/x-msvideo': 'AVI',
+    'video/x-matroska': 'MKV',
+    'video/x-flv': 'FLV',
+    'video/3gpp': '3GP',
+    'video/x-m4v': 'M4V'
+};
 const uploadStatus = document.getElementById('uploadStatus');
 
 // Theme and interactive elements
@@ -1120,12 +1133,17 @@ function showDownloadError() {
 function handleFileUpload(files) {
     if (uploadInProgress) return;
     
-    const videoFiles = Array.from(files).filter(file => 
-        file.type.startsWith('video/')
-    );
+    const videoFiles = Array.from(files).filter(file => {
+        const formatInfo = getVideoFormatInfo(file);
+        if (!formatInfo.supported) {
+            showUploadError(`Unsupported format: ${file.name} (${formatInfo.mimeType}). Please use MP4, WebM, OGG, MOV, AVI, MKV, FLV, 3GP, or M4V`);
+            return false;
+        }
+        return true;
+    });
     
     if (videoFiles.length === 0) {
-        showUploadError('Please select video files only.');
+        showUploadError('Please select supported video files only.');
         return;
     }
     
