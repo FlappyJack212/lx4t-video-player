@@ -17,11 +17,15 @@
   "author": "LX4T",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "better-sqlite3": "^12.4.1",
     "express": "^4.18.2",
-    "socket.io": "^4.6.1"
+    "express-session": "^1.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "socket.io": "^4.6.1",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
   }
 }
-

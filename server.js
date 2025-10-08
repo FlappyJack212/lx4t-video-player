@@ -17,8 +17,19 @@ const io = socketIO(server, {
 
 const PORT = process.env.PORT || 3001;
 
-// Serve static files
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Legacy support - serve root files
 app.use(express.static(__dirname));
+
+// API Routes
+const { router: authRouter } = require('./server/auth');
+app.use('/api/auth', authRouter);
 
 // Store active parties in memory
 const parties = new Map();

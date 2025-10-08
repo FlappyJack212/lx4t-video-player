@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse - LX4T Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .platform-header {
+            background: #1a1a1a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .platform-logo h1 {
+            color: #ff6600;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .platform-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .platform-nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .platform-nav a:hover {
+            color: #ff6600;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+        
+        .user-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .browse-container {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .welcome-section {
+            background: linear-gradient(135deg, #ff6600, #ff9500);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+        
+        .welcome-section h1 {
+            margin: 0 0 10px 0;
+        }
+        
+        .welcome-section p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .quick-link {
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s;
+        }
+        
+        .quick-link:hover {
+            transform: translateY(-4px);
+            border-color: #ff6600;
+        }
+        
+        .quick-link-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .quick-link h3 {
+            margin: 0 0 8px 0;
+            color: #ff6600;
+        }
+        
+        .quick-link p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="platform-header">
+        <div class="platform-logo">
+            <h1>🎬 LX4T Platform</h1>
+        </div>
+        <nav class="platform-nav">
+            <a href="/browse.html">Browse</a>
+            <a href="/index.html">Player</a>
+            <div class="user-menu">
+                <button class="user-btn" id="userBtn">
+                    <span id="username">Loading...</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="browse-container">
+        <div class="welcome-section">
+            <h1>Welcome to LX4T Platform! 🎉</h1>
+            <p>Your decentralized content platform is under construction.</p>
+            <p><strong>Phase 1.1 Complete:</strong> Authentication system is now live!</p>
+        </div>
+        
+        <div class="quick-links">
+            <a href="/index.html" class="quick-link">
+                <div class="quick-link-icon">🎬</div>
+                <h3>Video Player</h3>
+                <p>Watch videos with WebTorrent streaming</p>
+            </a>
+            
+            <a href="#" class="quick-link" onclick="alert('Coming in Phase 1.3!'); return false;">
+                <div class="quick-link-icon">📤</div>
+                <h3>Upload Video</h3>
+                <p>Share your content (Coming Soon)</p>
+            </a>
+            
+            <a href="#" class="quick-link" onclick="alert('Coming in Phase 2.2!'); return false;">
+                <div class="quick-link-icon">🔴</div>
+                <h3>Go Live</h3>
+                <p>Stream to your audience (Coming Soon)</p>
+            </a>
+            
+            <a href="#" class="quick-link" onclick="alert('Coming in Phase 3.1!'); return false;">
+                <div class="quick-link-icon">💬</div>
+                <h3>Communities</h3>
+                <p>Join servers and channels (Coming Soon)</p>
+            </a>
+        </div>
+        
+        <div style="margin-top: 40px; padding: 20px; background: rgba(79, 140, 255, 0.1); border-radius: 8px; border: 1px solid rgba(79, 140, 255, 0.3);">
+            <h3 style="margin-top: 0; color: #4f8cff;">✅ What's Working Now:</h3>
+            <ul style="color: rgba(255, 255, 255, 0.8);">
+                <li>✅ User registration & login</li>
+                <li>✅ JWT authentication</li>
+                <li>✅ SQLite database</li>
+                <li>✅ WebTorrent video streaming</li>
+                <li>✅ Watch parties</li>
+                <li>✅ Seasonal themes</li>
+            </ul>
+            
+            <h3 style="color: #4f8cff;">🚧 Coming Next:</h3>
+            <ul style="color: rgba(255, 255, 255, 0.8);">
+                <li>📤 Video uploads</li>
+                <li>📺 Browse interface</li>
+                <li>👤 User profiles</li>
+                <li>💬 Comments system</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Check authentication
+        const token = localStorage.getItem('lx4t_token');
+        const user = JSON.parse(localStorage.getItem('lx4t_user') || '{}');
+        
+        if (!token) {
+            window.location.href = '/auth.html';
+        } else {
+            // Verify token
+            fetch('/api/auth/me', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Unauthorized');
+                }
+                return res.json();
+            })
+            .then(data => {
+                document.getElementById('username').textContent = data.user.username;
+            })
+            .catch(() => {
+                localStorage.removeItem('lx4t_token');
+                localStorage.removeItem('lx4t_user');
+                window.location.href = '/auth.html';
+            });
+        }
+        
+        // User button (logout)
+        document.getElementById('userBtn').addEventListener('click', () => {
+            if (confirm('Logout?')) {
+                localStorage.removeItem('lx4t_token');
+                localStorage.removeItem('lx4t_user');
+                window.location.href = '/auth.html';
+            }
+        });
+    </script>
+</body>
+</html>
+
