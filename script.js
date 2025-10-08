@@ -2470,6 +2470,8 @@ function initializeSocket() {
     
     // Party events
     socket.on('party-created', (party) => {
+        console.log('✅ Party created:', party);
+        
         watchParty = {
             active: true,
             isHost: true,
@@ -2477,20 +2479,29 @@ function initializeSocket() {
             partyName: party.name,
             userName: party.host,
             users: party.users,
+            messages: [],
             lastSync: Date.now()
         };
+        
         showPartyRoom();
+        renderUsers();
+        updatePartyStatus();
         startSync();
+        
+        alert(`🎉 Party created! Share this ID: ${party.id}`);
     });
     
     socket.on('party-joined', (party) => {
+        console.log('✅ Joined party:', party);
+        
         watchParty = {
             active: true,
             isHost: false,
             partyId: party.id,
             partyName: party.name,
-            userName: socket.userName,
+            userName: party.users[party.users.length - 1].name,
             users: party.users,
+            messages: party.messages || [],
             lastSync: Date.now()
         };
         
@@ -2502,12 +2513,18 @@ function initializeSocket() {
         }
         
         showPartyRoom();
+        renderUsers();
+        renderChatMessages();
+        updatePartyStatus();
+        startSync();
+        
+        alert(`🎉 Joined party: ${party.name}!`);
     });
     
     socket.on('user-joined', (data) => {
         watchParty.users = data.users;
         renderUsers();
-        updatePartyStatus({ users: data.users });
+        updatePartyStatus();
         
         // Show notification
         showChatNotification(`${data.userName} joined the party!`);
@@ -2516,7 +2533,7 @@ function initializeSocket() {
     socket.on('user-left', (data) => {
         watchParty.users = data.users;
         renderUsers();
-        updatePartyStatus({ users: data.users });
+        updatePartyStatus();
         
         showChatNotification(`${data.userName} left the party`);
     });
@@ -2561,7 +2578,10 @@ function initializeSocket() {
     });
     
     socket.on('chat-message', (message) => {
-        addChatMessage(message);
+        // Add to local watchParty messages
+        if (!watchParty.messages) watchParty.messages = [];
+        watchParty.messages.push(message);
+        renderChatMessages();
     });
     
     socket.on('reaction', (data) => {
@@ -2858,49 +2878,24 @@ function showPartyRoom() {
 function startSync() {
     stopSync();
     
-    // Update party state every 2 seconds
+    // For WebSocket parties, sync happens via socket events
+    // This interval just sends periodic updates from the host
     syncInterval = setInterval(() => {
         if (!watchParty.active) {
             stopSync();
             return;
         }
         
-        const party = getParty(watchParty.partyId);
-        if (!party) {
-            leaveParty();
-            return;
-        }
-        
+        // Only host needs to broadcast state
         if (watchParty.isHost && socket && socket.connected) {
-            // Host: Broadcast state to all party members via WebSocket
             socket.emit('host-sync', {
                 videoUrl: video.src,
                 currentTime: video.currentTime,
                 paused: video.paused
             });
-        } else {
-            // Guest: Sync to host's state
-            const timeDiff = Math.abs(video.currentTime - party.currentTime);
-            
-            // Sync if off by more than 2 seconds
-            if (timeDiff > 2) {
-                video.currentTime = party.currentTime;
-            }
-            
-            // Sync play/pause state
-            if (party.paused && !video.paused) {
-                video.pause();
-            } else if (!party.paused && video.paused) {
-                video.play();
-            }
         }
         
-        // Update UI
-        renderUsers();
-        renderChatMessages();
-        updatePartyStatus(party);
-        
-    }, 2000);
+    }, 1000); // Sync every 1 second for smoother experience
 }
 
 function stopSync() {
@@ -2910,21 +2905,23 @@ function stopSync() {
     }
 }
 
-function updatePartyStatus(party) {
-    const userCount = party.users.length;
-    document.getElementById('partyUserCount').textContent = `👥 ${userCount} viewer${userCount !== 1 ? 's' : ''}`;
-    document.getElementById('viewerCount').textContent = userCount;
+function updatePartyStatus() {
+    if (!watchParty.active || !watchParty.users) return;
+    
+    const userCount = watchParty.users.length;
+    const partyUserCountEl = document.getElementById('partyUserCount');
+    const viewerCountEl = document.getElementById('viewerCount');
+    
+    if (partyUserCountEl) partyUserCountEl.textContent = `👥 ${userCount} viewer${userCount !== 1 ? 's' : ''}`;
+    if (viewerCountEl) viewerCountEl.textContent = userCount;
 }
 
 function renderUsers() {
-    if (!watchParty.active) return;
-    
-    const party = getParty(watchParty.partyId);
-    if (!party) return;
+    if (!watchParty.active || !watchParty.users) return;
     
     usersList.innerHTML = '';
     
-    party.users.forEach(user => {
+    watchParty.users.forEach(user => {
         const avatar = document.createElement('div');
         avatar.className = `user-avatar ${user.isHost ? 'host' : ''}`;
         avatar.textContent = user.name.charAt(0).toUpperCase();
@@ -2939,14 +2936,11 @@ function renderUsers() {
 }
 
 function renderChatMessages() {
-    if (!watchParty.active) return;
-    
-    const party = getParty(watchParty.partyId);
-    if (!party) return;
+    if (!watchParty.active || !watchParty.messages) return;
     
     partyChatMessages.innerHTML = '';
     
-    const messages = party.messages.slice(-50); // Last 50 messages
+    const messages = watchParty.messages.slice(-50); // Last 50 messages
     
     messages.forEach(msg => {
         const messageEl = document.createElement('div');
