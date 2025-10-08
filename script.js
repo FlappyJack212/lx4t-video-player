@@ -2309,16 +2309,17 @@ function applyTheme(themeName) {
     updateParticles(theme);
     
     // Update header with theme emoji
-    const header = document.querySelector('.header');
+    const header = document.querySelector('.logo');
     if (header) {
         const emojis = theme.emojis;
-        header.textContent = `${emojis[0]} LX4T Video Player ${emojis[1]}`;
+        // For clean layout, just show logo text without emojis
+        header.textContent = 'LX4T Player';
     }
     
     // Update theme button
     if (themeBtn) {
-        themeIcon.textContent = theme.emojis[0];
-        themeText.textContent = `${theme.name} Theme`;
+        if (themeIcon) themeIcon.textContent = theme.emojis[0];
+        if (themeText) themeText.textContent = `${theme.name} Theme`;
     }
     
     currentTheme = themeName;
