@@ -1506,24 +1506,28 @@ function hideInstallPrompt() {
 }
 
 // Event Listeners for all new features
-themeBtn.addEventListener('click', toggleTheme);
-spookyBtn.addEventListener('click', createGhostEffect);
-batBtn.addEventListener('click', createBatEffect);
-pumpkinBtn.addEventListener('click', createPumpkinEffect);
-addCommentBtn.addEventListener('click', addComment);
-commentInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        addComment();
-    }
-});
+if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+if (spookyBtn) spookyBtn.addEventListener('click', createGhostEffect);
+if (batBtn) batBtn.addEventListener('click', createBatEffect);
+if (pumpkinBtn) pumpkinBtn.addEventListener('click', createPumpkinEffect);
+if (addCommentBtn) addCommentBtn.addEventListener('click', addComment);
+if (commentInput) {
+    commentInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addComment();
+        }
+    });
+}
 
 // Analytics event listeners
-analyticsToggle.addEventListener('click', toggleAnalytics);
+if (analyticsToggle) analyticsToggle.addEventListener('click', toggleAnalytics);
 
 // Mobile gesture event listeners
-videoContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
-videoContainer.addEventListener('touchend', handleTouchEnd, { passive: true });
-gestureClose.addEventListener('click', hideMobileGestures);
+if (videoContainer) {
+    videoContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+    videoContainer.addEventListener('touchend', handleTouchEnd, { passive: true });
+}
+if (gestureClose) gestureClose.addEventListener('click', hideMobileGestures);
 
 // Show mobile gestures on first mobile visit
 if (isMobile) {
@@ -1854,23 +1858,27 @@ function parseVTTFile(content) {
 }
 
 // Event Listeners for Chapters and Subtitles
-chaptersToggle.addEventListener('click', toggleChapters);
-addChapterBtn.addEventListener('click', addChapter);
-chapterTime.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        chapterTitle.focus();
-    }
-});
-chapterTitle.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        addChapter();
-    }
-});
+if (chaptersToggle) chaptersToggle.addEventListener('click', toggleChapters);
+if (addChapterBtn) addChapterBtn.addEventListener('click', addChapter);
+if (chapterTime) {
+    chapterTime.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            if (chapterTitle) chapterTitle.focus();
+        }
+    });
+}
+if (chapterTitle) {
+    chapterTitle.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addChapter();
+        }
+    });
+}
 
-subtitlesToggle.addEventListener('click', toggleSubtitles);
-subtitleOnOff.addEventListener('click', toggleSubtitleDisplay);
-uploadSubtitleBtn.addEventListener('click', uploadSubtitleFile);
-addSubtitleBtn.addEventListener('click', addSubtitle);
+if (subtitlesToggle) subtitlesToggle.addEventListener('click', toggleSubtitles);
+if (subtitleOnOff) subtitleOnOff.addEventListener('click', toggleSubtitleDisplay);
+if (uploadSubtitleBtn) uploadSubtitleBtn.addEventListener('click', uploadSubtitleFile);
+if (addSubtitleBtn) addSubtitleBtn.addEventListener('click', addSubtitle);
 
 // Make deleteSubtitle globally accessible
 window.deleteSubtitle = deleteSubtitle;
