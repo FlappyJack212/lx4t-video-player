@@ -13,13 +13,14 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--theme-gradient);
+    background: #0f0f0f;
     min-height: 100vh;
-    padding: 20px;
+    padding: 0;
+    margin: 0;
     color: #fff;
     position: relative;
     overflow-x: hidden;
-    transition: background 1.5s ease;
+    transition: background 0.3s ease;
 }
 
 /* ==========================
@@ -37,12 +38,17 @@ body.pro-ui {
     color: var(--pro-text) !important;
 }
 
-/* Hide seasonal/whimsical effects in Pro UI */
+/* Hide seasonal/whimsical effects in Pro UI and by default */
 body.pro-ui .ghost,
 body.pro-ui .bat,
 body.pro-ui .pumpkin,
 body.pro-ui .particle,
-body.pro-ui .interactive-elements {
+body.pro-ui .interactive-elements,
+.ghost,
+.bat,
+.pumpkin,
+.particle,
+.interactive-elements {
     display: none !important;
 }
 
@@ -161,13 +167,11 @@ body.pro-ui p, body.pro-ui li { color: var(--pro-muted); }
 
 /* Watch Party Styles */
 .watch-party-section {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    padding: 20px;
+    background: #181818;
     border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 149, 0, 0.3);
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid #303030;
 }
 
 .party-header {
@@ -178,26 +182,27 @@ body.pro-ui p, body.pro-ui li { color: var(--pro-muted); }
 }
 
 .party-header h3 {
-    color: var(--theme-primary);
+    color: #fff;
     margin: 0;
-    text-shadow: 0 0 10px rgba(255, 149, 0, 0.5);
+    text-shadow: none;
+    font-size: 1.125rem;
+    font-weight: 600;
 }
 
 .party-toggle {
-    background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+    background: #3ea6ff;
     border: none;
-    border-radius: 6px;
-    color: #fff;
-    padding: 10px 20px;
-    font-size: 0.95rem;
+    border-radius: 18px;
+    color: #0f0f0f;
+    padding: 8px 16px;
+    font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .party-toggle:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: #4db2ff;
 }
 
 .party-create, .party-room {
@@ -1033,24 +1038,467 @@ kbd {
 .particle:nth-child(15) { left: 90%; animation-delay: 5s; animation-duration: 9s; }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
     position: relative;
     z-index: 2;
 }
 
-.header {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 2.5rem;
-    text-shadow: 
-        2px 2px 4px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(255, 149, 0, 0.6),
-        0 0 40px rgba(138, 43, 226, 0.4);
-    color: #ff9500;
-    animation: spooky-glow 3s ease-in-out infinite;
-    letter-spacing: 2px;
+/* ==========================
+   TOP NAVIGATION BAR
+   ========================== */
+.top-nav {
+    background: #0f0f0f;
+    border-bottom: 1px solid #303030;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
 }
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    cursor: pointer;
+    text-shadow: none;
+}
+
+.nav-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid #303030;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 18px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-btn:hover {
+    background: #272727;
+    border-color: #505050;
+}
+
+/* ==========================
+   MAIN LAYOUT (YouTube Style)
+   ========================== */
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr 402px;
+    gap: 24px;
+    padding: 24px;
+    max-width: 1920px;
+    margin: 0 auto;
+}
+
+.primary-content {
+    min-width: 0; /* Prevent grid blowout */
+}
+
+.sidebar {
+    position: sticky;
+    top: 80px;
+    height: fit-content;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+}
+
+/* ==========================
+   VIDEO METADATA (YouTube Style)
+   ========================== */
+.video-metadata {
+    padding: 12px 0;
+}
+
+.video-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+    text-shadow: none;
+}
+
+.video-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #303030;
+}
+
+.video-stats span {
+    color: #aaa;
+    font-size: 0.875rem;
+}
+
+.video-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background: #272727;
+}
+
+.action-btn .icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+/* ==========================
+   DESCRIPTION SECTION
+   ========================== */
+.description-section {
+    background: #272727;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0;
+}
+
+.description-toggle {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    text-align: left;
+    padding: 0;
+}
+
+.description-toggle .chevron {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    transition: transform 0.2s ease;
+    margin-left: auto;
+}
+
+.description-toggle.expanded .chevron {
+    transform: rotate(180deg);
+}
+
+.description-content {
+    padding-top: 12px;
+    color: #aaa;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+/* ==========================
+   COMMENTS (YouTube Style)
+   ========================== */
+.comments-section {
+    margin: 24px 0;
+}
+
+.comments-header {
+    margin-bottom: 24px;
+}
+
+.comments-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+    text-shadow: none;
+}
+
+.comment-form {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    align-items: center;
+}
+
+.comment-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #303030;
+    color: #fff;
+    padding: 8px 0;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.comment-form input:focus {
+    border-bottom-color: #fff;
+}
+
+.comment-form button {
+    background: #3ea6ff;
+    border: none;
+    color: #0f0f0f;
+    padding: 10px 16px;
+    border-radius: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.comment-form button:hover {
+    background: #4db2ff;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.comment-item {
+    display: flex;
+    gap: 16px;
+    background: transparent;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+}
+
+.comment-author {
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.comment-text {
+    font-size: 0.875rem;
+    color: #fff;
+    line-height: 1.4;
+}
+
+.comment-time {
+    font-size: 0.75rem;
+    color: #aaa;
+    margin-top: 4px;
+}
+
+/* ==========================
+   SIDEBAR PLAYLIST
+   ========================== */
+.sidebar .playlist-section {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-bottom: 24px;
+    box-shadow: none;
+}
+
+.sidebar .playlist-section h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 12px;
+    text-shadow: none;
+}
+
+.playlist-container {
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+}
+
+.playlist-header {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.playlist-btn {
+    background: transparent;
+    border: 1px solid #303030;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 18px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: none;
+}
+
+.playlist-btn:hover {
+    background: #272727;
+    transform: none;
+}
+
+.playlist-list {
+    max-height: 500px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.playlist-item {
+    background: transparent;
+    padding: 8px;
+    border-radius: 8px;
+    border-left: none;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.playlist-item:hover {
+    background: #272727;
+    transform: none;
+}
+
+.playlist-item.active {
+    background: #272727;
+    border-color: #3ea6ff;
+    box-shadow: none;
+}
+
+.playlist-item-thumbnail {
+    width: 80px;
+    height: 45px;
+    background: #181818;
+    border-radius: 4px;
+    margin-right: 8px;
+}
+
+.playlist-item-title {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 2px;
+}
+
+.playlist-item-duration {
+    font-size: 0.75rem;
+    color: #aaa;
+}
+
+/* ==========================
+   SIDEBAR UPLOAD
+   ========================== */
+.sidebar-upload {
+    margin-top: 24px;
+}
+
+.upload-toggle-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #303030;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.upload-toggle-btn:hover {
+    background: #272727;
+}
+
+.upload-dropdown {
+    background: #272727;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dropdown-btn {
+    background: #3ea6ff;
+    border: none;
+    color: #0f0f0f;
+    padding: 8px 16px;
+    border-radius: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-btn:hover {
+    background: #4db2ff;
+}
+
+.url-input-compact {
+    display: flex;
+    gap: 8px;
+}
+
+.url-input-compact input {
+    flex: 1;
+    background: #181818;
+    border: 1px solid #303030;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+    outline: none;
+}
+
+.url-input-compact input:focus {
+    border-color: #3ea6ff;
+}
+
+.url-input-compact button {
+    background: transparent;
+    border: 1px solid #303030;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 18px;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.url-input-compact button:hover {
+    background: #272727;
+}
+
+/* Old header removed - now using .logo in top-nav */
 
 @keyframes spooky-glow {
     0%, 100% { 
@@ -1072,13 +1520,12 @@ kbd {
     background: #000;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 
-        0 10px 40px rgba(0, 0, 0, 0.6),
-        0 0 20px rgba(255, 149, 0, 0.3),
-        0 0 40px rgba(138, 43, 226, 0.2);
-    margin-bottom: 30px;
-    border: 2px solid rgba(255, 149, 0, 0.3);
+    box-shadow: none;
+    margin-bottom: 0;
+    border: none;
     transition: all 0.3s ease;
+    aspect-ratio: 16 / 9;
+    width: 100%;
 }
 
 /* Mini Player Mode */
@@ -1137,8 +1584,9 @@ kbd {
 
 .video-player {
     width: 100%;
+    height: 100%;
     display: block;
-    max-height: 70vh;
+    object-fit: contain;
 }
 
 /* Video Overlay Subtitles */
@@ -1742,22 +2190,7 @@ kbd {
     margin-left: 5px;
 }
 
-/* Playlist Section */
-.playlist-section {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 149, 0, 0.3);
-}
-
-.playlist-section h3 {
-    margin-bottom: 15px;
-    color: #ff9500;
-    text-shadow: 0 0 10px rgba(255, 149, 0, 0.5);
-}
+/* Old playlist styling - replaced with sidebar style */
 
 .playlist-container {
     background: rgba(0, 0, 0, 0.3);
@@ -1881,21 +2314,23 @@ kbd {
     transform: scale(1.1);
 }
 
-/* Video Input */
-.video-input {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    padding: 20px;
+/* Video Input (legacy - now using sidebar upload) */
+.video-input,
+.video-input-full {
+    background: #181818;
     border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin: 20px 0;
 }
 
-.video-input h3 {
-    color: #ff9500;
+.video-input h3,
+.video-input-full h3 {
+    color: #fff;
     margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(255, 149, 0, 0.5);
-    text-align: center;
+    text-shadow: none;
+    text-align: left;
+    font-size: 1.125rem;
+    font-weight: 600;
 }
 
 /* Upload Section */
@@ -2012,140 +2447,9 @@ kbd {
     padding-top: 20px;
 }
 
-/* Theme Switcher */
-.theme-switcher {
-    text-align: center;
-    margin: 20px 0;
-}
+/* Old theme switcher styles - now in nav */
 
-.theme-btn {
-    background: linear-gradient(135deg, #ff6600, #ff9500);
-    border: none;
-    border-radius: 25px;
-    color: #fff;
-    padding: 12px 24px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0 auto;
-}
-
-.theme-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.theme-icon {
-    font-size: 1.2rem;
-}
-
-/* Comments Section */
-.comments-section {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 149, 0, 0.3);
-}
-
-.comments-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.comments-header h3 {
-    color: #ff9500;
-    margin: 0;
-    text-shadow: 0 0 10px rgba(255, 149, 0, 0.5);
-}
-
-.comments-toggle {
-    background: linear-gradient(135deg, #ff6600, #ff9500);
-    border: none;
-    border-radius: 6px;
-    color: #fff;
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.comments-toggle:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.comment-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.comment-form input {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.95);
-    outline: none;
-    font-size: 0.9rem;
-}
-
-.comment-form button {
-    background: linear-gradient(135deg, #ff6600, #ff9500);
-    border: none;
-    border-radius: 6px;
-    color: #fff;
-    padding: 10px 20px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.comment-form button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.comments-list {
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.comment-item {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    border-left: 4px solid #ff6600;
-}
-
-.comment-author {
-    font-weight: 600;
-    color: #ff9500;
-    margin-bottom: 5px;
-}
-
-.comment-text {
-    color: #fff;
-    line-height: 1.4;
-}
-
-.comment-time {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
-    margin-top: 5px;
-}
+/* Old comments styling - replaced with YouTube style above */
 
 /* Interactive Halloween Elements */
 .interactive-elements {
@@ -2188,34 +2492,69 @@ kbd {
     100% { transform: translateY(-5px) scale(1.1); }
 }
 
+/* Halloween Theme Overrides */
+body.halloween-theme {
+    background: linear-gradient(135deg, #ff6600 0%, #000000 50%, #6a0dad 100%);
+}
+
+body.halloween-theme .ghost,
+body.halloween-theme .bat,
+body.halloween-theme .pumpkin,
+body.halloween-theme .particle {
+    display: block !important;
+}
+
+body.halloween-theme .top-nav {
+    background: linear-gradient(90deg, rgba(255, 102, 0, 0.1), rgba(138, 43, 226, 0.1));
+    border-bottom-color: rgba(255, 149, 0, 0.3);
+}
+
+body.halloween-theme .nav-btn {
+    border-color: rgba(255, 149, 0, 0.5);
+}
+
+body.halloween-theme .nav-btn:hover {
+    background: rgba(255, 149, 0, 0.2);
+    border-color: #ff6600;
+}
+
+body.halloween-theme .comment-form button,
+body.halloween-theme .dropdown-btn,
+body.halloween-theme .party-toggle {
+    background: linear-gradient(135deg, #ff6600, #ff9500);
+    color: #fff;
+}
+
+body.halloween-theme .comment-form button:hover,
+body.halloween-theme .dropdown-btn:hover,
+body.halloween-theme .party-toggle:hover {
+    background: linear-gradient(135deg, #ff9500, #ff6600);
+}
+
 /* Normal Theme Styles */
 body.normal-theme {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-body.normal-theme .header {
-    color: #fff;
+body.normal-theme .logo {
+    color: #667eea;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    animation: none;
 }
 
-body.normal-theme .video-container {
-    border: 2px solid rgba(102, 126, 234, 0.3);
-    box-shadow: 
-        0 10px 40px rgba(0, 0, 0, 0.4),
-        0 0 20px rgba(102, 126, 234, 0.3);
+body.normal-theme .top-nav {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border-bottom-color: rgba(102, 126, 234, 0.3);
 }
 
 body.normal-theme .progress-filled {
     background: linear-gradient(90deg, #667eea, #764ba2);
 }
 
-body.normal-theme .theme-btn {
+body.normal-theme .comment-form button,
+body.normal-theme .dropdown-btn,
+body.normal-theme .party-toggle {
     background: linear-gradient(135deg, #667eea, #764ba2);
-}
-
-body.normal-theme .spooky-btn {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
 }
 
 /* Hide Halloween elements in normal theme */
@@ -2996,6 +3335,58 @@ body.fullscreen-mode .video-container .video-player {
     line-height: 1.4;
 }
 
+/* Extra Features Section */
+.extra-features {
+    margin: 24px;
+    max-width: 1200px;
+    margin: 24px auto;
+}
+
+.extra-features > div {
+    margin-bottom: 24px;
+}
+
+/* Sections that should be collapsible */
+.watch-party-section,
+.analytics-section,
+.chapters-section,
+.subtitles-section {
+    background: #181818;
+    border: 1px solid #303030;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.analytics-header h3,
+.chapters-header h3,
+.subtitles-header h3 {
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-shadow: none;
+}
+
+.analytics-toggle,
+.chapters-toggle,
+.subtitles-toggle {
+    background: #3ea6ff;
+    border: none;
+    border-radius: 18px;
+    color: #0f0f0f;
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.analytics-toggle:hover,
+.chapters-toggle:hover,
+.subtitles-toggle:hover {
+    background: #4db2ff;
+}
+
 /* Sample Videos */
 .sample-videos {
     margin: 15px 0;
@@ -3006,7 +3397,7 @@ body.fullscreen-mode .video-container .video-player {
 }
 
 .sample-videos h5 {
-    color: #ff9500;
+    color: #fff;
     margin: 0 0 10px 0;
     font-size: 0.9rem;
 }
@@ -3035,27 +3426,69 @@ body.fullscreen-mode .video-container .video-player {
     box-shadow: 0 4px 8px rgba(255, 102, 0, 0.3);
 }
 
-/* Responsive Design */
+/* ==========================
+   RESPONSIVE DESIGN
+   ========================== */
+@media (max-width: 1280px) {
+    .main-layout {
+        grid-template-columns: 1fr 350px;
+        gap: 16px;
+        padding: 16px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+        padding: 12px;
+    }
+    
+    .sidebar {
+        position: static;
+        max-height: none;
+        margin-top: 24px;
+    }
+    
+    .video-container {
+        border-radius: 0;
+    }
+    
+    .top-nav {
+        padding: 10px 16px;
+    }
+}
+
 @media (max-width: 768px) {
-    .header {
-        font-size: 1.8rem;
+    .logo {
+        font-size: 1.2rem;
+    }
+    
+    .nav-btn span {
+        display: none; /* Hide text, show only icon */
     }
     
     .controls-row {
         flex-wrap: wrap;
+        gap: 4px;
+    }
+    
+    .control-btn {
+        padding: 6px;
+        width: 32px;
+        height: 32px;
+    }
+    
+    .icon {
+        width: 18px;
+        height: 18px;
     }
     
     .volume-slider {
         width: 0;
     }
     
-    .info-section ul {
-        grid-template-columns: 1fr;
-    }
-    
-    .icon {
-        width: 20px;
-        height: 20px;
+    .volume-control:hover .volume-slider {
+        width: 60px;
     }
     
     .play-overlay-btn {
@@ -3066,6 +3499,29 @@ body.fullscreen-mode .video-container .video-player {
     .play-overlay-btn svg {
         width: 30px;
         height: 30px;
+    }
+    
+    .video-title {
+        font-size: 1.125rem;
+    }
+    
+    .video-stats {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .action-btn span {
+        display: none; /* Show only icons on mobile */
+    }
+    
+    .playlist-item-thumbnail {
+        width: 60px;
+        height: 34px;
+    }
+    
+    .sidebar .playlist-section h3 {
+        font-size: 0.9375rem;
     }
 }
 

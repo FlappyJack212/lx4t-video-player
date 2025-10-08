@@ -55,9 +55,23 @@
     <div class="particle"></div>
     
     <div class="container">
-        <h1 class="header">🎃 LX4T Video Player 👻</h1>
-        
-        <div class="video-container" id="videoContainer">
+        <!-- Top Navigation Bar -->
+        <div class="top-nav">
+            <h1 class="logo">LX4T Player</h1>
+            <div class="nav-controls">
+                <button class="nav-btn" id="themeBtn" title="Switch Theme">
+                    <span class="theme-icon">🎃</span>
+                </button>
+                <button class="nav-btn" id="proUiBtn" title="Toggle Pro UI">✨</button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-layout">
+            <!-- Primary Content -->
+            <div class="primary-content">
+                <!-- Video Player -->
+                <div class="video-container" id="videoContainer">
             <button class="mini-player-close" id="miniPlayerClose">×</button>
             
             <video id="videoPlayer" class="video-player" poster="https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217">
@@ -258,9 +272,61 @@
                 </button>
             </div>
         </div>
-        
-        <!-- Playlist Section -->
-        <div class="playlist-section">
+
+        <!-- Video Metadata -->
+        <div class="video-metadata">
+            <h2 class="video-title" id="videoTitle">Big Buck Bunny</h2>
+            <div class="video-stats">
+                <span id="videoViews">0 views</span>
+                <div class="video-actions">
+                    <button class="action-btn" id="downloadBtn" title="Download">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                        </svg>
+                        <span>Download</span>
+                    </button>
+                    <button class="action-btn" id="bookmarkBtn" title="Bookmark">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                        </svg>
+                        <span>Save</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="description-section">
+            <button class="description-toggle" id="descriptionToggle">
+                <span>Description</span>
+                <svg class="chevron" viewBox="0 0 24 24">
+                    <path d="M7 10l5 5 5-5z"/>
+                </svg>
+            </button>
+            <div class="description-content hidden" id="descriptionContent">
+                <p>HTML5 video player with custom controls, playlist management, and advanced features.</p>
+            </div>
+        </div>
+
+        <!-- Comments Section (moved here) -->
+        <div class="comments-section">
+            <div class="comments-header">
+                <h3><span id="commentCount">0</span> Comments</h3>
+            </div>
+            <div class="comment-form">
+                <input type="text" id="commentInput" placeholder="Add a comment..." maxlength="200">
+                <button id="addCommentBtn">Comment</button>
+            </div>
+            <div class="comments-list" id="commentsList">
+                <!-- Comments will be added here -->
+            </div>
+        </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Playlist Section (moved to sidebar) -->
+                <div class="playlist-section">
             <h3>🎵 Video Playlist</h3>
             <div class="playlist-container">
                 <div class="playlist-header">
@@ -274,8 +340,27 @@
             </div>
         </div>
 
-        <!-- Video Input Section -->
-        <div class="video-input">
+        <!-- Upload Section (compact in sidebar) -->
+        <div class="sidebar-upload">
+            <button class="upload-toggle-btn" id="uploadToggleBtn">
+                📁 Add Video
+            </button>
+            <div class="upload-dropdown hidden" id="uploadDropdown">
+                <input type="file" id="fileInput" multiple accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-msvideo,video/x-matroska,video/x-flv,video/3gpp,video/x-m4v" style="display: none;">
+                <button class="dropdown-btn" id="uploadBtn">Upload File</button>
+                <div class="url-input-compact">
+                    <input type="text" id="videoUrl" placeholder="Or paste video URL">
+                    <button id="loadVideoBtn">Load</button>
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+
+        <!-- Collapsible Sections (moved to bottom) -->
+        <div class="extra-features">
+        <!-- Video Input Section (full upload area) -->
+        <div class="video-input-full hidden" id="videoInputFull">
             <h3>📁 Add Your Own Videos</h3>
             
             <!-- File Upload -->
@@ -311,12 +396,12 @@
             
             <!-- URL Input -->
             <div class="url-section">
-                <label for="videoUrl">Or enter video URL:</label>
-                <input type="text" id="videoUrl" placeholder="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" value="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
-                <button id="loadVideoBtn">Load Video</button>
+                <label>Or enter video URL:</label>
+                <input type="text" id="videoUrlFull" placeholder="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" value="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
+                <button id="loadVideoFullBtn">Load Video</button>
             </div>
         </div>
-        
+
         <!-- Keyboard Shortcuts Help Modal -->
         <div class="help-modal hidden" id="helpModal">
             <div class="help-content">
@@ -582,8 +667,10 @@
             </div>
         </div>
 
+        </div>
+
         <!-- Subtitles/Captions -->
-        <div class="subtitles-section">
+        <div class="subtitles-section hidden">
             <div class="subtitles-header">
                 <h3>📝 Subtitles & Captions</h3>
                 <button class="subtitles-toggle" id="subtitlesToggle">Show Subtitles</button>
@@ -606,6 +693,7 @@
                     <!-- Subtitles will be added here -->
                 </div>
             </div>
+        </div>
         </div>
 
         <!-- Mobile Gesture Instructions -->
@@ -636,47 +724,6 @@
             </div>
         </div>
 
-        <!-- Info Section -->
-        <div class="info-section">
-            <h2>🎃 Halloween Features:</h2>
-            <ul>
-                <li>👻 Floating animated ghosts</li>
-                <li>🦇 Flying bats with wing flaps</li>
-                <li>🎃 Glowing pumpkins</li>
-                <li>✨ Magical floating particles</li>
-                <li>🔥 Spooky orange glow effects</li>
-                <li>🎮 Interactive Halloween buttons</li>
-                <li>💬 Real-time comments system</li>
-                <li>🎨 Theme switcher (Halloween/Normal)</li>
-            </ul>
-            
-            <h2>🎮 Ultimate Player Features:</h2>
-            <ul>
-                <li>✓ Play/Pause controls</li>
-                <li>✓ Progress bar with scrubbing</li>
-                <li>✓ Volume control</li>
-                <li>✓ Playback speed adjustment (0.25x - 2x)</li>
-                <li>✓ Skip forward/backward (10 seconds)</li>
-                <li>✓ Fullscreen mode</li>
-                <li>✓ Picture-in-Picture mode</li>
-                <li>✓ Keyboard shortcuts (Space, Arrow keys, F, M)</li>
-                <li>✓ Auto-hide controls</li>
-                <li>✓ Video thumbnails on hover</li>
-                <li>✓ Quality selector</li>
-                <li>✓ Playlist management</li>
-                <li>✓ File upload (drag & drop)</li>
-                <li>✓ Download videos</li>
-                <li>✓ Video chapters & timestamps</li>
-                <li>✓ Subtitles & captions (.srt/.vtt)</li>
-                <li>✓ Mobile touch gestures</li>
-                <li>✓ PWA support</li>
-                <li>✓ Video analytics</li>
-            </ul>
-            
-            <p><strong>Try it now:</strong> The example video is already loaded! Click the play button to see the Halloween magic! 🎃</p>
-            <p><strong>Tip:</strong> Press <kbd>?</kbd> to see all keyboard shortcuts!</p>
-            <p><strong>Interactive:</strong> Click the spooky buttons above for special effects! 👻🦇🎃</p>
-        </div>
     </div>
     
     <script src="script.js"></script>

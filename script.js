@@ -3048,6 +3048,55 @@ downloadBtn.addEventListener('click', downloadVideo);
 // Double-click to fullscreen
 video.addEventListener('dblclick', toggleFullscreen);
 
+// YouTube-style Description Toggle
+const descriptionToggle = document.getElementById('descriptionToggle');
+const descriptionContent = document.getElementById('descriptionContent');
+if (descriptionToggle && descriptionContent) {
+    descriptionToggle.addEventListener('click', () => {
+        descriptionContent.classList.toggle('hidden');
+        descriptionToggle.classList.toggle('expanded');
+    });
+}
+
+// Sidebar Upload Toggle
+const uploadToggleBtn = document.getElementById('uploadToggleBtn');
+const uploadDropdown = document.getElementById('uploadDropdown');
+if (uploadToggleBtn && uploadDropdown) {
+    uploadToggleBtn.addEventListener('click', () => {
+        uploadDropdown.classList.toggle('hidden');
+    });
+}
+
+// Handle URL input from sidebar
+const videoUrlInput = document.getElementById('videoUrl');
+const loadVideoBtn = document.getElementById('loadVideoBtn');
+if (loadVideoBtn && videoUrlInput) {
+    loadVideoBtn.addEventListener('click', () => {
+        const url = videoUrlInput.value.trim();
+        if (url) {
+            video.src = url;
+            video.load();
+            video.play();
+        }
+    });
+}
+
+// Update video title in metadata
+function updateVideoTitle(title) {
+    const videoTitle = document.getElementById('videoTitle');
+    if (videoTitle) {
+        videoTitle.textContent = title;
+    }
+}
+
+// Update view count display
+function updateViewCount() {
+    const videoViews = document.getElementById('videoViews');
+    if (videoViews) {
+        videoViews.textContent = `${analytics.views} view${analytics.views !== 1 ? 's' : ''}`;
+    }
+}
+
 // Click video to play/pause
 video.addEventListener('click', togglePlayPause);
 
