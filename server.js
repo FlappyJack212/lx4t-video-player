@@ -21,11 +21,16 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from public directory
+// Serve static files from public directory FIRST
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Legacy support - serve root files
+// Legacy support - serve root files (old player)
 app.use(express.static(__dirname));
+
+// Redirect root to new browse page
+app.get('/', (req, res) => {
+    res.redirect('/auth.html');
+});
 
 // API Routes
 const { router: authRouter } = require('./server/auth');
