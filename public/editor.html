@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Editor - LX4T Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { margin: 0; padding: 0; background: #0f0f0f; }
+        .platform-header { background: #1a1a1a; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 15px 30px; }
+        .platform-logo h1 { color: #ff6600; margin: 0; font-size: 1.5rem; cursor: pointer; }
+        .editor-container { height: calc(100vh - 60px); display: flex; flex-direction: column; }
+        .editor-preview { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; }
+        .editor-timeline { height: 200px; background: #1a1a1a; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 20px; }
+        .editor-controls { background: #1a1a1a; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 20px; display: flex; gap: 15px; justify-content: center; }
+        .editor-btn { padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; }
+        .editor-btn:hover { transform: translateY(-2px); }
+        .preview-video { max-width: 100%; max-height: 100%; }
+        .timeline-track { background: rgba(255, 255, 255, 0.05); height: 60px; border-radius: 6px; position: relative; margin-top: 10px; }
+        .playhead { position: absolute; width: 2px; height: 100%; background: #ff0000; top: 0; left: 0; }
+    </style>
+</head>
+<body>
+    <header class="platform-header">
+        <div class="platform-logo"><h1 onclick="window.location.href='/browse-new.html'">🎬 LX4T</h1></div>
+    </header>
+    
+    <div class="editor-container">
+        <div class="editor-preview">
+            <video id="editorVideo" class="preview-video" controls></video>
+        </div>
+        
+        <div class="editor-timeline">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span style="color: #fff; font-weight: 600;">Timeline</span>
+                <span id="timecode" style="color: rgba(255,255,255,0.6); font-family: monospace;">00:00 / 00:00</span>
+            </div>
+            <div class="timeline-track">
+                <div class="playhead" id="playhead"></div>
+            </div>
+        </div>
+        
+        <div class="editor-controls">
+            <input type="file" id="videoFile" accept="video/*" style="display: none;">
+            <button class="editor-btn" onclick="document.getElementById('videoFile').click()" style="background: linear-gradient(135deg, #ff6600, #ff9500); color: #fff;">📁 Load Video</button>
+            <button class="editor-btn" onclick="trimVideo()" style="background: rgba(255,255,255,0.1); color: #fff;">✂️ Trim</button>
+            <button class="editor-btn" onclick="exportVideo()" style="background: linear-gradient(135deg, #00ff00, #00cc00); color: #fff;">💾 Export</button>
+        </div>
+    </div>
+    
+    <script>
+        const videoEl = document.getElementById('editorVideo');
+        const playhead = document.getElementById('playhead');
+        const timecode = document.getElementById('timecode');
+        let currentFile = null;
+        
+        document.getElementById('videoFile').addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                currentFile = e.target.files[0];
+                videoEl.src = URL.createObjectURL(currentFile);
+            }
+        });
+        
+        videoEl.addEventListener('timeupdate', () => {
+            if (videoEl.duration) {
+                const progress = (videoEl.currentTime / videoEl.duration) * 100;
+                playhead.style.left = progress + '%';
+                
+                const current = formatTime(videoEl.currentTime);
+                const total = formatTime(videoEl.duration);
+                timecode.textContent = `${current} / ${total}`;
+            }
+        });
+        
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+        
+        function trimVideo() {
+            alert('⚠️ Advanced editing coming soon! For now, use trimming on upload.');
+        }
+        
+        function exportVideo() {
+            if (!currentFile) {
+                alert('Please load a video first');
+                return;
+            }
+            window.location.href = '/upload.html';
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Live - LX4T Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { margin: 0; padding: 0; background: #0f0f0f; }
+        .platform-header { background: #1a1a1a; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 15px 30px; }
+        .platform-logo h1 { color: #ff6600; margin: 0; font-size: 1.5rem; cursor: pointer; }
+        .golive-container { max-width: 1200px; margin: 40px auto; padding: 0 40px; }
+        .golive-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .stream-section { background: #1a1a1a; border-radius: 12px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .stream-preview { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; }
+        .live-indicator { background: #ff0000; color: #fff; padding: 6px 12px; border-radius: 6px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; margin: 15px 0; }
+        .live-dot { width: 8px; height: 8px; background: #fff; border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .stream-btn { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin: 10px 0; transition: transform 0.2s; }
+        .stream-btn:hover { transform: translateY(-2px); }
+        .form-group { margin: 15px 0; }
+        .form-group label { display: block; color: rgba(255, 255, 255, 0.9); margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #fff; }
+    </style>
+</head>
+<body>
+    <header class="platform-header">
+        <div class="platform-logo"><h1 onclick="window.location.href='/browse-new.html'">🎬 LX4T</h1></div>
+    </header>
+    
+    <div class="golive-container">
+        <h1 style="color: #fff; margin-bottom: 30px;">🔴 Go Live</h1>
+        
+        <div class="golive-grid">
+            <div class="stream-section">
+                <h3 style="color: #fff; margin: 0 0 20px 0;">Stream Preview</h3>
+                <video id="streamPreview" class="stream-preview" autoplay muted></video>
+                <div id="liveIndicator" class="live-indicator" style="display: none;">
+                    <div class="live-dot"></div>
+                    LIVE • <span id="viewerCount">0</span> viewers
+                </div>
+            </div>
+            
+            <div class="stream-section">
+                <h3 style="color: #fff; margin: 0 0 20px 0;">Stream Settings</h3>
+                
+                <div class="form-group">
+                    <label>Stream Title:</label>
+                    <input type="text" id="streamTitle" placeholder="What are you streaming?">
+                </div>
+                
+                <button id="goLiveBtn" class="stream-btn" style="background: linear-gradient(135deg, #ff0000, #ff4444); color: #fff;">🔴 Go Live</button>
+                <button id="endStreamBtn" class="stream-btn" style="background: linear-gradient(135deg, #666, #444); color: #fff; display: none;">⏹️ End Stream</button>
+                
+                <div style="margin-top: 20px; padding: 15px; background: rgba(255, 165, 0, 0.1); border: 1px solid rgba(255, 165, 0, 0.3); border-radius: 8px;">
+                    <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 0.875rem;">
+                        💡 <strong>How it works:</strong><br>
+                        • Start streaming<br>
+                        • Share your stream link<br>
+                        • Viewers join and watch live!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/golive.js"></script>
+</body>
+</html>
+
