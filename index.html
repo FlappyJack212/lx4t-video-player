@@ -542,6 +542,38 @@
                         </div>
                     </div>
                     
+                    <!-- Voice Channel -->
+                    <div class="voice-channel" id="voiceChannel">
+                        <div class="voice-header">
+                            <h4>🎙️ Voice Channel</h4>
+                            <button class="voice-toggle-btn" id="voiceToggleBtn">Join Voice</button>
+                        </div>
+                        <div class="voice-members" id="voiceMembers">
+                            <!-- Voice participants appear here -->
+                        </div>
+                        <div class="voice-controls hidden" id="voiceControls">
+                            <button class="voice-control-btn" id="muteBtn" title="Mute/Unmute">
+                                <svg viewBox="0 0 24 24" class="mic-on">
+                                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                                </svg>
+                                <svg viewBox="0 0 24 24" class="mic-off hidden">
+                                    <path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/>
+                                </svg>
+                            </button>
+                            <button class="voice-control-btn" id="deafenBtn" title="Deafen">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+                                </svg>
+                            </button>
+                            <button class="voice-control-btn danger" id="leaveVoiceBtn" title="Leave Voice">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
                     <!-- Party Chat -->
                     <div class="party-chat">
                         <div class="chat-header">

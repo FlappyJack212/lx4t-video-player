@@ -230,6 +230,78 @@ io.on('connection', (socket) => {
         socket.emit('active-parties', activeParties);
     });
 
+    // Voice Chat Events
+    socket.on('voice-join', (data) => {
+        console.log(`🎙️ ${data.userName} joined voice in party: ${data.partyId}`);
+        
+        // Notify all users in the party
+        socket.to(data.partyId).emit('voice-user-joined', {
+            userName: data.userName,
+            socketId: socket.id
+        });
+    });
+
+    socket.on('voice-leave', (data) => {
+        console.log(`🎙️ ${data.userName} left voice in party: ${data.partyId}`);
+        
+        socket.to(data.partyId).emit('voice-user-left', {
+            userName: data.userName
+        });
+    });
+
+    socket.on('voice-speaking', (data) => {
+        // Broadcast speaking indicator to all in party
+        socket.to(data.partyId).emit('voice-speaking', {
+            userName: data.userName,
+            speaking: data.speaking
+        });
+    });
+
+    // WebRTC Signaling
+    socket.on('webrtc-offer', (data) => {
+        console.log(`🔗 WebRTC offer from ${socket.userName} to ${data.to}`);
+        
+        // Find the target user's socket in the party
+        const party = parties.get(data.partyId);
+        if (party) {
+            const targetUser = party.users.find(u => u.name === data.to);
+            if (targetUser) {
+                io.to(targetUser.socketId).emit('webrtc-offer', {
+                    from: socket.userName,
+                    offer: data.offer
+                });
+            }
+        }
+    });
+
+    socket.on('webrtc-answer', (data) => {
+        console.log(`🔗 WebRTC answer from ${socket.userName} to ${data.to}`);
+        
+        const party = parties.get(data.partyId);
+        if (party) {
+            const targetUser = party.users.find(u => u.name === data.to);
+            if (targetUser) {
+                io.to(targetUser.socketId).emit('webrtc-answer', {
+                    from: socket.userName,
+                    answer: data.answer
+                });
+            }
+        }
+    });
+
+    socket.on('webrtc-ice-candidate', (data) => {
+        const party = parties.get(data.partyId);
+        if (party) {
+            const targetUser = party.users.find(u => u.name === data.to);
+            if (targetUser) {
+                io.to(targetUser.socketId).emit('webrtc-ice-candidate', {
+                    from: socket.userName,
+                    candidate: data.candidate
+                });
+            }
+        }
+    });
+
     // Disconnect
     socket.on('disconnect', () => {
         console.log('👋 User disconnected:', socket.id);

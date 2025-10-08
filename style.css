@@ -387,6 +387,186 @@ body.pro-ui p, body.pro-ui li { color: var(--pro-muted); }
     opacity: 0.9;
 }
 
+/* Voice Channel */
+.voice-channel {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.voice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: rgba(30, 215, 96, 0.15);
+    border-bottom: 1px solid rgba(30, 215, 96, 0.3);
+}
+
+.voice-header h4 {
+    margin: 0;
+    color: #1ed760;
+    font-size: 0.95rem;
+}
+
+.voice-toggle-btn {
+    background: #1ed760;
+    border: none;
+    color: #000;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.voice-toggle-btn:hover {
+    background: #1fdf67;
+    transform: translateY(-1px);
+}
+
+.voice-toggle-btn.active {
+    background: #f04747;
+    color: #fff;
+}
+
+.voice-toggle-btn.active:hover {
+    background: #f15050;
+}
+
+.voice-members {
+    padding: 12px 15px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.voice-member {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.voice-member.speaking {
+    background: rgba(30, 215, 96, 0.2);
+    border: 1px solid rgba(30, 215, 96, 0.5);
+    box-shadow: 0 0 10px rgba(30, 215, 96, 0.3);
+}
+
+.voice-member.you {
+    background: rgba(88, 101, 242, 0.2);
+    border: 1px solid rgba(88, 101, 242, 0.5);
+}
+
+.voice-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #5865f2, #7289da);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    position: relative;
+}
+
+.voice-avatar.speaking::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px solid #1ed760;
+    animation: voicePulse 0.5s ease-in-out infinite;
+}
+
+@keyframes voicePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.1); }
+}
+
+.voice-member-name {
+    flex: 1;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.voice-member-icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.voice-icon {
+    width: 16px;
+    height: 16px;
+    fill: #aaa;
+}
+
+.voice-icon.muted {
+    fill: #f04747;
+}
+
+.voice-icon.deafened {
+    fill: #f04747;
+}
+
+.voice-controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.voice-control-btn {
+    background: rgba(79, 84, 92, 0.8);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.voice-control-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: #fff;
+}
+
+.voice-control-btn:hover {
+    background: rgba(79, 84, 92, 1);
+    transform: scale(1.1);
+}
+
+.voice-control-btn.active {
+    background: #1ed760;
+}
+
+.voice-control-btn.muted {
+    background: #f04747;
+}
+
+.voice-control-btn.danger {
+    background: rgba(237, 66, 69, 0.8);
+}
+
+.voice-control-btn.danger:hover {
+    background: rgba(237, 66, 69, 1);
+}
+
 /* Party Chat */
 .party-chat {
     background: rgba(0, 0, 0, 0.3);
