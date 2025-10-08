@@ -48,7 +48,9 @@ body.pro-ui .interactive-elements,
 .bat,
 .pumpkin,
 .particle,
-.interactive-elements {
+.interactive-elements,
+.theme-switcher,
+.info-section {
     display: none !important;
 }
 
@@ -1264,19 +1266,19 @@ kbd {
 }
 
 .comment-form button {
-    background: #3ea6ff;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    color: #0f0f0f;
+    color: #fff;
     padding: 10px 16px;
     border-radius: 18px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     font-size: 0.875rem;
     transition: all 0.2s ease;
 }
 
 .comment-form button:hover {
-    background: #4db2ff;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .comments-list {
@@ -1325,11 +1327,13 @@ kbd {
 }
 
 .sidebar .playlist-section h3 {
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    color: #fff;
-    margin-bottom: 12px;
+    color: #aaa;
+    margin-bottom: 8px;
     text-shadow: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .playlist-container {
@@ -1340,16 +1344,16 @@ kbd {
 
 .playlist-header {
     display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
+    gap: 6px;
+    margin-bottom: 8px;
     flex-wrap: wrap;
 }
 
 .playlist-btn {
-    background: transparent;
-    border: 1px solid #303030;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
     color: #fff;
-    padding: 6px 12px;
+    padding: 4px 10px;
     border-radius: 18px;
     font-size: 0.75rem;
     font-weight: 500;
@@ -1359,51 +1363,71 @@ kbd {
 }
 
 .playlist-btn:hover {
-    background: #272727;
+    background: rgba(255, 255, 255, 0.2);
     transform: none;
 }
 
 .playlist-list {
-    max-height: 500px;
+    max-height: calc(100vh - 200px);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
 }
 
 .playlist-item {
+    display: flex;
+    align-items: flex-start;
     background: transparent;
-    padding: 8px;
-    border-radius: 8px;
-    border-left: none;
-    border: 1px solid transparent;
+    padding: 8px 0;
+    border-radius: 0;
+    border: none;
     transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .playlist-item:hover {
-    background: #272727;
+    background: rgba(255, 255, 255, 0.1);
     transform: none;
 }
 
 .playlist-item.active {
-    background: #272727;
-    border-color: #3ea6ff;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
     box-shadow: none;
 }
 
+.playlist-item.active .playlist-item-title {
+    color: #3ea6ff;
+}
+
 .playlist-item-thumbnail {
-    width: 80px;
-    height: 45px;
-    background: #181818;
-    border-radius: 4px;
+    width: 94px;
+    height: 53px;
+    background: #202020;
+    border-radius: 8px;
     margin-right: 8px;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.playlist-item-info {
+    flex: 1;
+    min-width: 0;
+    padding-top: 2px;
 }
 
 .playlist-item-title {
     font-size: 0.8125rem;
     font-weight: 500;
     color: #fff;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .playlist-item-duration {
@@ -1420,12 +1444,12 @@ kbd {
 
 .upload-toggle-btn {
     width: 100%;
-    background: transparent;
-    border: 1px solid #303030;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
     color: #fff;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 0.875rem;
+    padding: 8px 12px;
+    border-radius: 18px;
+    font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -1433,11 +1457,11 @@ kbd {
 }
 
 .upload-toggle-btn:hover {
-    background: #272727;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .upload-dropdown {
-    background: #272727;
+    background: #202020;
     border-radius: 8px;
     padding: 12px;
     margin-top: 8px;
@@ -1447,19 +1471,19 @@ kbd {
 }
 
 .dropdown-btn {
-    background: #3ea6ff;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    color: #0f0f0f;
+    color: #fff;
     padding: 8px 16px;
     border-radius: 18px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     transition: all 0.2s ease;
 }
 
 .dropdown-btn:hover {
-    background: #4db2ff;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .url-input-compact {
@@ -1469,8 +1493,8 @@ kbd {
 
 .url-input-compact input {
     flex: 1;
-    background: #181818;
-    border: 1px solid #303030;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
     color: #fff;
     padding: 8px 12px;
     border-radius: 4px;
@@ -1479,12 +1503,12 @@ kbd {
 }
 
 .url-input-compact input:focus {
-    border-color: #3ea6ff;
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .url-input-compact button {
-    background: transparent;
-    border: 1px solid #303030;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
     color: #fff;
     padding: 8px 16px;
     border-radius: 18px;
@@ -1495,7 +1519,7 @@ kbd {
 }
 
 .url-input-compact button:hover {
-    background: #272727;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* Old header removed - now using .logo in top-nav */
