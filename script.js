@@ -2606,25 +2606,23 @@ createPartyBtn.addEventListener('click', () => {
         return;
     }
     
+    // Initialize socket connection
+    initializeSocket();
+    
     const partyId = generatePartyId();
-    const party = {
-        id: partyId,
-        name: name,
-        host: hostName,
+    
+    // Emit create-party event to server
+    socket.emit('create-party', {
+        partyId: partyId,
+        partyName: name,
+        hostName: hostName,
         password: password,
-        created: Date.now(),
         videoUrl: video.src,
         currentTime: video.currentTime,
-        paused: video.paused,
-        users: [{ name: hostName, isHost: true, joined: Date.now() }],
-        messages: []
-    };
+        paused: video.paused
+    });
     
-    // Save to localStorage (in production, use real backend)
-    saveParty(party);
-    
-    // Join as host
-    joinPartyAsHost(party, hostName);
+    console.log('🎬 Creating party:', partyId);
 });
 
 // Join Party
@@ -2638,24 +2636,17 @@ joinPartyBtn.addEventListener('click', () => {
         return;
     }
     
-    const party = getParty(partyId);
+    // Initialize socket connection
+    initializeSocket();
     
-    if (!party) {
-        alert('Party not found!');
-        return;
-    }
+    // Emit join-party event to server
+    socket.emit('join-party', {
+        partyId: partyId,
+        userName: userName,
+        password: password
+    });
     
-    if (party.password && party.password !== password) {
-        alert('Incorrect password!');
-        return;
-    }
-    
-    // Add user to party
-    party.users.push({ name: userName, isHost: false, joined: Date.now() });
-    saveParty(party);
-    
-    // Join as guest
-    joinPartyAsGuest(party, userName);
+    console.log('🚪 Joining party:', partyId);
 });
 
 // Leave Party
@@ -2812,21 +2803,9 @@ function joinPartyAsGuest(party, userName) {
 function leaveParty() {
     if (!watchParty.active) return;
     
-    // Remove user from party
-    const party = getParty(watchParty.partyId);
-    if (party) {
-        party.users = party.users.filter(u => u.name !== watchParty.userName);
-        
-        if (party.users.length === 0) {
-            // Delete party if no users left
-            deleteParty(watchParty.partyId);
-        } else {
-            // If host left, make first user new host
-            if (watchParty.isHost && party.users.length > 0) {
-                party.users[0].isHost = true;
-            }
-            saveParty(party);
-        }
+    // Emit leave-party event to server
+    if (socket && socket.connected) {
+        socket.emit('leave-party');
     }
     
     // Reset state
@@ -2844,6 +2823,8 @@ function leaveParty() {
     
     partyCreate.classList.remove('hidden');
     partyRoom.classList.add('hidden');
+    
+    alert('👋 Left the party');
 }
 
 function showPartyRoom() {
@@ -2881,15 +2862,13 @@ function startSync() {
             return;
         }
         
-        if (watchParty.isHost) {
-            // Host: Broadcast state to party
-            party.videoUrl = video.src;
-            party.currentTime = video.currentTime;
-            party.paused = video.paused;
-            party.users = party.users.map(u => 
-                u.name === watchParty.userName ? { ...u, isHost: true } : u
-            );
-            saveParty(party);
+        if (watchParty.isHost && socket && socket.connected) {
+            // Host: Broadcast state to all party members via WebSocket
+            socket.emit('host-sync', {
+                videoUrl: video.src,
+                currentTime: video.currentTime,
+                paused: video.paused
+            });
         } else {
             // Guest: Sync to host's state
             const timeDiff = Math.abs(video.currentTime - party.currentTime);
