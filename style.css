@@ -2864,6 +2864,45 @@ body.fullscreen-mode .video-container .video-player {
     line-height: 1.4;
 }
 
+/* Sample Videos */
+.sample-videos {
+    margin: 15px 0;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sample-videos h5 {
+    color: #ff9500;
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
+}
+
+.video-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.video-link-btn {
+    background: linear-gradient(135deg, #ff6600, #ff9500);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.video-link-btn:hover {
+    background: linear-gradient(135deg, #ff9500, #ff6600);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 102, 0, 0.3);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .header {

@@ -1193,6 +1193,16 @@ fileInput.addEventListener('change', (e) => {
     }
 });
 
+// Sample video buttons
+document.querySelectorAll('.video-link-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const videoUrl = btn.getAttribute('data-url');
+        videoUrlInput.value = videoUrl;
+        loadVideoFromUrl(videoUrl);
+        showNotification(`🎬 Loading ${btn.textContent}...`, 'info');
+    });
+});
+
 // Drag and drop functionality
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
