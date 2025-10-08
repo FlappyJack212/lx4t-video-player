@@ -308,7 +308,7 @@ let watchParty = {
 };
 let syncInterval = null;
 let socket = null;
-const SOCKET_URL = 'http://localhost:3001'; // Change to your server URL in production
+const SOCKET_URL = 'https://lx4tmovie.up.railway.app'; // Railway production URL
 
 let controlsTimeout;
 let isVolumeBeforeMute = 100;
