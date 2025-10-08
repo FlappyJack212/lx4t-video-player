@@ -32,11 +32,13 @@ const { router: authRouter } = require('./server/auth');
 const uploadRouter = require('./server/upload');
 const commentsRouter = require('./server/comments');
 const subscriptionsRouter = require('./server/subscriptions');
+const aiRouter = require('./server/ai');
 
 app.use('/api/auth', authRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/comments', commentsRouter);
 app.use('/api/subscriptions', subscriptionsRouter);
+app.use('/api/ai', aiRouter);
 
 // Search endpoint
 app.get('/api/search', (req, res) => {
