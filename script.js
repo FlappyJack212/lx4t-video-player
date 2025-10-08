@@ -672,9 +672,38 @@ document.addEventListener('fullscreenchange', () => {
     if (document.fullscreenElement) {
         fullscreenOpen.classList.add('hidden');
         fullscreenClose.classList.remove('hidden');
+        
+        // Hide all other sections when in fullscreen
+        document.querySelectorAll('.watch-party-section, .playlist-section, .comments-section, .interactive-section, .analytics-section').forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Hide themed particles
+        document.querySelectorAll('.themed-particle').forEach(particle => {
+            particle.style.display = 'none';
+        });
+        
+        // Set body background to black
+        document.body.style.background = '#000';
+        document.body.style.padding = '0';
+        
     } else {
         fullscreenOpen.classList.remove('hidden');
         fullscreenClose.classList.add('hidden');
+        
+        // Show all sections when exiting fullscreen
+        document.querySelectorAll('.watch-party-section, .playlist-section, .comments-section, .interactive-section, .analytics-section').forEach(section => {
+            section.style.display = '';
+        });
+        
+        // Show themed particles
+        document.querySelectorAll('.themed-particle').forEach(particle => {
+            particle.style.display = '';
+        });
+        
+        // Restore body background
+        document.body.style.background = '';
+        document.body.style.padding = '';
     }
 });
 
