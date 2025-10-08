@@ -1650,6 +1650,260 @@ kbd {
     gap: 8px;
 }
 
+/* WebTorrent Status */
+.torrent-status {
+    margin-top: 12px;
+    padding: 12px;
+    background: rgba(79, 140, 255, 0.1);
+    border: 1px solid rgba(79, 140, 255, 0.3);
+    border-radius: 8px;
+    animation: slideIn 0.3s ease;
+}
+
+.torrent-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.torrent-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.torrent-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.torrent-progress-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.torrent-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4f8cff, #7b5cff);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+#torrentProgressText {
+    font-size: 0.75rem;
+    color: #4f8cff;
+    font-weight: 600;
+    min-width: 35px;
+}
+
+.torrent-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.torrent-stats span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.torrent-close {
+    background: rgba(255, 68, 68, 0.2);
+    border: 1px solid rgba(255, 68, 68, 0.4);
+    color: #ff4444;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.torrent-close:hover {
+    background: rgba(255, 68, 68, 0.3);
+    border-color: #ff4444;
+}
+
+/* Torrent Help Modal */
+.torrent-help-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.torrent-help-content {
+    background: #1a1a1a;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.torrent-help-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(79, 140, 255, 0.2), rgba(123, 92, 255, 0.2));
+}
+
+.torrent-help-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #fff;
+}
+
+.torrent-help-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+}
+
+.torrent-help-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.torrent-help-body {
+    padding: 20px;
+}
+
+.help-step {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.help-step:last-of-type {
+    border-bottom: none;
+}
+
+.help-step h4 {
+    color: #4f8cff;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.help-step p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.help-step code {
+    background: rgba(79, 140, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: #4f8cff;
+}
+
+.help-note {
+    background: rgba(255, 165, 0, 0.1);
+    border: 1px solid rgba(255, 165, 0, 0.3);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.help-note p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 8px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.help-note p:last-child {
+    margin-bottom: 0;
+}
+
+/* Saved Magnets */
+.saved-magnets {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.saved-magnet-item {
+    background: rgba(79, 140, 255, 0.1);
+    border: 1px solid rgba(79, 140, 255, 0.2);
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+}
+
+.magnet-item-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.magnet-item-title {
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    font-size: 0.75rem;
+}
+
+.magnet-item-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.magnet-item-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.magnet-item-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.magnet-item-btn.delete-magnet:hover {
+    background: rgba(255, 68, 68, 0.3);
+}
+
 .dropdown-btn {
     background: rgba(255, 255, 255, 0.1);
     border: none;

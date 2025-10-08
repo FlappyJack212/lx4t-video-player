@@ -50,6 +50,7 @@ Then open: **http://localhost:3001**
 - **Manual override** - Choose any theme anytime
 
 ### 📺 Video Player Features
+- ✅ **🧲 WebTorrent Streaming** - Stream movies directly from magnet links!
 - ✅ **Playlists** - Queue multiple videos
 - ✅ **Quality selector** - 720p, 1080p, etc.
 - ✅ **Chapters** - Navigate video sections
@@ -74,6 +75,39 @@ Then open: **http://localhost:3001**
 - ✅ **Error handling** - Graceful failures
 - ✅ **Mobile gestures** - Touch controls
 - ✅ **PWA support** - Install as app
+
+---
+
+## 🧲 How to Stream Torrents (NEW!)
+
+### Watch ANY Movie with Magnet Links:
+
+1. **Find a Torrent**
+   - Go to torrent sites like **YTS**, **1337x**, **The Pirate Bay**, etc.
+   - Search for any movie/show
+   
+2. **Copy Magnet Link**
+   - Look for the 🧲 **Magnet** button
+   - Right-click → Copy link
+   - Magnet links start with: `magnet:?xt=urn:btih:...`
+
+3. **Stream in the Player**
+   - Click **📁 Add Video** button
+   - Paste magnet link in the **🧲 magnet link** field
+   - Click **Stream**
+   - Video starts playing as it downloads!
+
+4. **Save Favorites**
+   - Click **💾 Save Magnet** to bookmark your favorite movies
+   - Access them instantly anytime!
+
+### Live Stats While Streaming:
+- ⬇️ Download speed
+- ⬆️ Upload speed  
+- 👥 Number of peers
+- 📊 Download progress
+
+**No torrenting software needed - streams directly in your browser!**
 
 ---
 
@@ -170,6 +204,7 @@ halloween: {
 - **Frontend**: Vanilla JavaScript (no frameworks!)
 - **Backend**: Node.js + Express + Socket.io
 - **Real-time**: WebSockets
+- **Streaming**: WebTorrent (P2P in browser!)
 - **Storage**: LocalStorage (client) + In-Memory (server)
 - **PWA**: Service Workers + Manifest
 
@@ -213,13 +248,14 @@ npm start
 
 ## 📈 Stats
 
-- **Lines of Code**: 5,600+
-- **Features**: 55+
+- **Lines of Code**: 6,000+
+- **Features**: 60+
 - **Themes**: 12
 - **Animations**: 20+
-- **File Size**: ~150KB total
+- **File Size**: ~160KB total
 - **Load Time**: <1 second
 - **Browser Support**: All modern browsers
+- **P2P Streaming**: WebTorrent powered
 
 ---
 
@@ -228,6 +264,7 @@ npm start
 ### Compared to YouTube/Netflix:
 | Feature | LX4T Player | YouTube | Netflix |
 |---------|------------|---------|---------|
+| Torrent Streaming | ✅ Built-in | ❌ No | ❌ No |
 | Watch Parties | ✅ Built-in | ❌ Extensions only | ❌ Paid only |
 | Seasonal Themes | ✅ 12 auto themes | ❌ None | ❌ None |
 | File Upload | ✅ Yes | ❌ Account needed | ❌ No |

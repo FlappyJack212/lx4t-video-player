@@ -9,6 +9,9 @@
     <!-- Socket.io for Watch Parties -->
     <script src="/socket.io/socket.io.js"></script>
     
+    <!-- WebTorrent for Streaming -->
+    <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+    
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#ff6600">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -368,6 +371,65 @@
                     <input type="text" id="videoUrl" placeholder="Or paste video URL">
                     <button id="loadVideoBtn">Load</button>
                 </div>
+                <div class="url-input-compact">
+                    <input type="text" id="magnetLink" placeholder="🧲 Paste magnet link">
+                    <button id="loadTorrentBtn">Stream</button>
+                </div>
+                <button class="dropdown-btn" id="saveMagnetBtn">💾 Save Magnet</button>
+                <button class="dropdown-btn" id="torrentHelpBtn">🧲 How to get torrents?</button>
+                <div class="saved-magnets" id="savedMagnets">
+                    <!-- Saved magnet links appear here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Torrent Help Modal -->
+        <div class="torrent-help-modal hidden" id="torrentHelpModal">
+            <div class="torrent-help-content">
+                <div class="torrent-help-header">
+                    <h3>🧲 How to Stream Torrents</h3>
+                    <button class="torrent-help-close" id="torrentHelpClose">✕</button>
+                </div>
+                <div class="torrent-help-body">
+                    <div class="help-step">
+                        <h4>Step 1: Find a Torrent</h4>
+                        <p>Visit popular torrent sites (search "movie torrents" on Google)</p>
+                        <p><strong>Popular sites:</strong> YTS, 1337x, The Pirate Bay, RARBG alternatives</p>
+                    </div>
+                    <div class="help-step">
+                        <h4>Step 2: Copy Magnet Link</h4>
+                        <p>Look for a "Magnet Link" or 🧲 icon. Right-click and copy the link.</p>
+                        <p>Magnet links start with: <code>magnet:?xt=urn:btih:...</code></p>
+                    </div>
+                    <div class="help-step">
+                        <h4>Step 3: Paste and Stream</h4>
+                        <p>Paste the magnet link in the input box above and click "Stream"!</p>
+                        <p>The video will start playing as it downloads.</p>
+                    </div>
+                    <div class="help-note">
+                        <p><strong>⚠️ Legal Notice:</strong> Only download/stream content you have rights to access. Use torrents responsibly.</p>
+                        <p><strong>💡 Tip:</strong> Look for torrents with many seeders for faster streaming!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- WebTorrent Status -->
+        <div class="torrent-status hidden" id="torrentStatus">
+            <div class="torrent-info">
+                <div class="torrent-name" id="torrentName">Loading torrent...</div>
+                <div class="torrent-progress">
+                    <div class="torrent-progress-bar">
+                        <div class="torrent-progress-fill" id="torrentProgressFill"></div>
+                    </div>
+                    <span id="torrentProgressText">0%</span>
+                </div>
+                <div class="torrent-stats">
+                    <span>⬇️ <span id="downloadSpeed">0 KB/s</span></span>
+                    <span>⬆️ <span id="uploadSpeed">0 KB/s</span></span>
+                    <span>👥 <span id="numPeers">0 peers</span></span>
+                </div>
+                <button class="torrent-close" id="closeTorrent">✕ Stop</button>
             </div>
         </div>
             </div>

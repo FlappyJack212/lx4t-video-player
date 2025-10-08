@@ -1202,6 +1202,297 @@ document.querySelectorAll('.video-link-btn').forEach(btn => {
     });
 });
 
+// ==========================
+// WebTorrent Functionality
+// ==========================
+
+// Initialize WebTorrent client
+let client = null;
+let currentTorrent = null;
+
+// Check WebTorrent support
+function checkWebTorrentSupport() {
+    try {
+        if (typeof WebTorrent === 'undefined') {
+            console.error('WebTorrent library not loaded');
+            return false;
+        }
+        
+        if (!WebTorrent.WEBRTC_SUPPORT) {
+            showNotification('⚠️ Your browser doesn\'t support WebRTC. Torrent streaming won\'t work.', 'error');
+            return false;
+        }
+        
+        return true;
+    } catch (err) {
+        console.error('WebTorrent check failed:', err);
+        return false;
+    }
+}
+
+// Initialize client only if supported
+if (checkWebTorrentSupport()) {
+    client = new WebTorrent();
+    console.log('✅ WebTorrent initialized successfully');
+} else {
+    console.warn('❌ WebTorrent not supported on this browser');
+}
+
+// WebTorrent UI elements
+const magnetLinkInput = document.getElementById('magnetLink');
+const loadTorrentBtn = document.getElementById('loadTorrentBtn');
+const torrentStatus = document.getElementById('torrentStatus');
+const torrentName = document.getElementById('torrentName');
+const torrentProgressFill = document.getElementById('torrentProgressFill');
+const torrentProgressText = document.getElementById('torrentProgressText');
+const downloadSpeed = document.getElementById('downloadSpeed');
+const uploadSpeed = document.getElementById('uploadSpeed');
+const numPeers = document.getElementById('numPeers');
+const closeTorrent = document.getElementById('closeTorrent');
+
+// Load torrent from magnet link
+loadTorrentBtn.addEventListener('click', () => {
+    const magnetUri = magnetLinkInput.value.trim();
+    
+    if (!magnetUri) {
+        showNotification('⚠️ Please enter a magnet link', 'error');
+        return;
+    }
+    
+    if (!magnetUri.startsWith('magnet:')) {
+        showNotification('⚠️ Invalid magnet link format', 'error');
+        return;
+    }
+    
+    if (!client) {
+        showNotification('❌ WebTorrent not supported in your browser. Try Chrome, Firefox, or Edge on desktop.', 'error');
+        return;
+    }
+    
+    loadTorrent(magnetUri);
+});
+
+// Handle Enter key in magnet input
+magnetLinkInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        loadTorrentBtn.click();
+    }
+});
+
+function loadTorrent(magnetUri) {
+    if (!client) {
+        showNotification('❌ WebTorrent not available', 'error');
+        return;
+    }
+    
+    // Stop existing torrent if any
+    if (currentTorrent) {
+        currentTorrent.destroy(() => {
+            console.log('Previous torrent stopped');
+        });
+    }
+    
+    showNotification('🧲 Connecting to peers... (this may take 30-60 seconds)', 'info');
+    torrentStatus.classList.remove('hidden');
+    torrentName.textContent = 'Connecting to peers...';
+    
+    // Add timeout warning if taking too long
+    const timeoutWarning = setTimeout(() => {
+        if (currentTorrent && currentTorrent.numPeers === 0) {
+            showNotification('⏳ Still connecting... Make sure you have a good internet connection', 'info');
+        }
+    }, 15000);
+    
+    // Add the torrent
+    client.add(magnetUri, (torrent) => {
+        clearTimeout(timeoutWarning);
+        currentTorrent = torrent;
+        
+        console.log('Torrent info hash:', torrent.infoHash);
+        torrentName.textContent = torrent.name;
+        
+        showNotification(`🎬 Streaming: ${torrent.name}`, 'success');
+        
+        // Find the largest video file
+        const videoFile = torrent.files.find(file => {
+            const ext = file.name.split('.').pop().toLowerCase();
+            return ['mp4', 'webm', 'mkv', 'avi', 'mov', 'm4v', 'ogv'].includes(ext);
+        }) || torrent.files.reduce((largest, file) => {
+            return file.length > largest.length ? file : largest;
+        });
+        
+        if (!videoFile) {
+            showNotification('❌ No video file found in torrent', 'error');
+            return;
+        }
+        
+        console.log('Streaming video file:', videoFile.name);
+        
+        // Render the video to the video element
+        videoFile.renderTo(video, {
+            autoplay: false,
+            controls: false
+        });
+        
+        // Update progress
+        const updateProgress = () => {
+            const progress = (torrent.progress * 100).toFixed(1);
+            torrentProgressFill.style.width = `${progress}%`;
+            torrentProgressText.textContent = `${progress}%`;
+            
+            downloadSpeed.textContent = formatBytes(torrent.downloadSpeed) + '/s';
+            uploadSpeed.textContent = formatBytes(torrent.uploadSpeed) + '/s';
+            numPeers.textContent = `${torrent.numPeers} peers`;
+        };
+        
+        // Update every second
+        const progressInterval = setInterval(() => {
+            if (!currentTorrent) {
+                clearInterval(progressInterval);
+                return;
+            }
+            updateProgress();
+        }, 1000);
+        
+        // Initial update
+        updateProgress();
+        
+        // When torrent is ready
+        torrent.on('ready', () => {
+            console.log('Torrent ready!');
+            showNotification('✅ Ready to stream!', 'success');
+        });
+        
+        // When torrent is done
+        torrent.on('done', () => {
+            console.log('Torrent download complete!');
+            showNotification('✅ Download complete!', 'success');
+        });
+        
+        // Error handling
+        torrent.on('error', (err) => {
+            console.error('Torrent error:', err);
+            showNotification(`❌ Torrent error: ${err.message}`, 'error');
+        });
+        
+        // Add to playlist
+        addToPlaylist({
+            title: videoFile.name,
+            url: null,
+            torrent: true,
+            magnetUri: magnetUri,
+            duration: '00:00'
+        });
+    });
+}
+
+// Close/stop torrent
+closeTorrent.addEventListener('click', () => {
+    if (currentTorrent) {
+        currentTorrent.destroy(() => {
+            console.log('Torrent stopped');
+            showNotification('🛑 Torrent stopped', 'info');
+        });
+        currentTorrent = null;
+    }
+    torrentStatus.classList.add('hidden');
+    video.src = '';
+});
+
+// Helper function to format bytes
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Torrent help modal
+const torrentHelpBtn = document.getElementById('torrentHelpBtn');
+const torrentHelpModal = document.getElementById('torrentHelpModal');
+const torrentHelpClose = document.getElementById('torrentHelpClose');
+
+torrentHelpBtn.addEventListener('click', () => {
+    torrentHelpModal.classList.remove('hidden');
+});
+
+torrentHelpClose.addEventListener('click', () => {
+    torrentHelpModal.classList.add('hidden');
+});
+
+torrentHelpModal.addEventListener('click', (e) => {
+    if (e.target === torrentHelpModal) {
+        torrentHelpModal.classList.add('hidden');
+    }
+});
+
+// Save magnet links
+const saveMagnetBtn = document.getElementById('saveMagnetBtn');
+const savedMagnetsContainer = document.getElementById('savedMagnets');
+let savedMagnets = JSON.parse(localStorage.getItem('savedMagnets') || '[]');
+
+// Load saved magnets on page load
+function loadSavedMagnets() {
+    savedMagnetsContainer.innerHTML = '';
+    if (savedMagnets.length === 0) return;
+    
+    savedMagnets.forEach((item, index) => {
+        const magnetItem = document.createElement('div');
+        magnetItem.className = 'saved-magnet-item';
+        magnetItem.innerHTML = `
+            <div class="magnet-item-content">
+                <span class="magnet-item-title">${item.name || 'Saved Magnet ' + (index + 1)}</span>
+                <div class="magnet-item-actions">
+                    <button class="magnet-item-btn load-magnet" data-index="${index}">▶️</button>
+                    <button class="magnet-item-btn delete-magnet" data-index="${index}">🗑️</button>
+                </div>
+            </div>
+        `;
+        savedMagnetsContainer.appendChild(magnetItem);
+    });
+    
+    // Add event listeners
+    document.querySelectorAll('.load-magnet').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const index = parseInt(btn.getAttribute('data-index'));
+            const magnet = savedMagnets[index];
+            magnetLinkInput.value = magnet.uri;
+            loadTorrent(magnet.uri);
+        });
+    });
+    
+    document.querySelectorAll('.delete-magnet').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const index = parseInt(btn.getAttribute('data-index'));
+            savedMagnets.splice(index, 1);
+            localStorage.setItem('savedMagnets', JSON.stringify(savedMagnets));
+            loadSavedMagnets();
+            showNotification('🗑️ Magnet link deleted', 'success');
+        });
+    });
+}
+
+saveMagnetBtn.addEventListener('click', () => {
+    const magnetUri = magnetLinkInput.value.trim();
+    
+    if (!magnetUri || !magnetUri.startsWith('magnet:')) {
+        showNotification('⚠️ Please enter a valid magnet link first', 'error');
+        return;
+    }
+    
+    const name = prompt('Enter a name for this magnet link:');
+    if (!name) return;
+    
+    savedMagnets.push({ name, uri: magnetUri });
+    localStorage.setItem('savedMagnets', JSON.stringify(savedMagnets));
+    loadSavedMagnets();
+    showNotification('💾 Magnet link saved!', 'success');
+});
+
+// Load saved magnets on init
+loadSavedMagnets();
+
 // Drag and drop functionality
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
