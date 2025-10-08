@@ -29,7 +29,10 @@ app.use(express.static(__dirname));
 
 // API Routes
 const { router: authRouter } = require('./server/auth');
+const uploadRouter = require('./server/upload');
+
 app.use('/api/auth', authRouter);
+app.use('/api/upload', uploadRouter);
 
 // Store active parties in memory
 const parties = new Map();

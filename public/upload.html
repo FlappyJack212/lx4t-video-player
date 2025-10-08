@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Video - LX4T Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .platform-header {
+            background: #1a1a1a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .platform-logo h1 {
+            color: #ff6600;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .upload-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .upload-card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .upload-card h2 {
+            margin: 0 0 30px 0;
+            color: #fff;
+        }
+        
+        .drop-zone {
+            border: 2px dashed rgba(255, 102, 0, 0.5);
+            border-radius: 12px;
+            padding: 60px 40px;
+            text-align: center;
+            background: rgba(255, 102, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .drop-zone.dragover {
+            border-color: #ff6600;
+            background: rgba(255, 102, 0, 0.1);
+        }
+        
+        .drop-zone-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .drop-zone h3 {
+            margin: 0 0 10px 0;
+            color: #fff;
+        }
+        
+        .drop-zone p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .form-section {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .form-section.show {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .file-info {
+            background: rgba(79, 140, 255, 0.1);
+            border: 1px solid rgba(79, 140, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .file-info.show {
+            display: block;
+        }
+        
+        .file-info p {
+            margin: 5px 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.875rem;
+        }
+        
+        .upload-progress {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .upload-progress.show {
+            display: block;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6600, #ff9500);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+        }
+        
+        .upload-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff6600, #ff9500);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .upload-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .success-message {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .success-message h3 {
+            margin: 0 0 10px 0;
+            color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <header class="platform-header">
+        <div class="platform-logo">
+            <h1>🎬 LX4T Platform</h1>
+        </div>
+        <nav>
+            <a href="/browse.html" style="color: rgba(255, 255, 255, 0.8); text-decoration: none;">← Back to Browse</a>
+        </nav>
+    </header>
+    
+    <div class="upload-container">
+        <div class="upload-card">
+            <h2>📤 Upload Video</h2>
+            
+            <div class="drop-zone" id="dropZone">
+                <div class="drop-zone-icon">📁</div>
+                <h3>Drop your video here</h3>
+                <p>or click to browse</p>
+                <p style="margin-top: 10px; font-size: 0.75rem;">Supported formats: MP4, WebM, OGG, MOV, AVI, MKV (Max 2GB)</p>
+            </div>
+            
+            <input type="file" id="fileInput" class="file-input" accept="video/*">
+            
+            <div class="file-info" id="fileInfo">
+                <p><strong>Selected file:</strong> <span id="fileName"></span></p>
+                <p><strong>Size:</strong> <span id="fileSize"></span></p>
+                <p><strong>Type:</strong> <span id="fileType"></span></p>
+            </div>
+            
+            <div class="form-section" id="formSection">
+                <div class="form-group">
+                    <label for="videoTitle">Title *</label>
+                    <input type="text" id="videoTitle" required maxlength="100">
+                </div>
+                
+                <div class="form-group">
+                    <label for="videoDescription">Description</label>
+                    <textarea id="videoDescription" maxlength="1000"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="videoCategory">Category</label>
+                    <select id="videoCategory">
+                        <option value="Uncategorized">Uncategorized</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="Music">Music</option>
+                        <option value="Education">Education</option>
+                        <option value="Tech">Tech</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Comedy">Comedy</option>
+                        <option value="Animation">Animation</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="videoTags">Tags (comma separated)</label>
+                    <input type="text" id="videoTags" placeholder="funny, viral, awesome">
+                </div>
+                
+                <button class="upload-btn" id="uploadBtn">Upload Video</button>
+            </div>
+            
+            <div class="upload-progress" id="uploadProgress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p class="progress-text" id="progressText">Uploading...</p>
+            </div>
+            
+            <div class="success-message" id="successMessage">
+                <h3>✅ Upload Complete!</h3>
+                <p>Your video has been uploaded and is now being seeded.</p>
+                <p><strong>Magnet Link:</strong> <span id="magnetLink" style="font-size: 0.75rem; word-break: break-all;"></span></p>
+                <button class="upload-btn" onclick="window.location.href='/browse.html'" style="margin-top: 15px;">Go to Browse</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/upload.js"></script>
+</body>
+</html>
+
