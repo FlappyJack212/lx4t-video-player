@@ -1493,6 +1493,15 @@ saveMagnetBtn.addEventListener('click', () => {
 // Load saved magnets on init
 loadSavedMagnets();
 
+// Auto-play from URL parameter
+const urlParams = new URLSearchParams(window.location.search);
+const autoplayMagnet = urlParams.get('autoplay');
+if (autoplayMagnet && client) {
+    console.log('🎬 Auto-loading video from URL...');
+    magnetLinkInput.value = autoplayMagnet;
+    loadTorrent(autoplayMagnet);
+}
+
 // Drag and drop functionality
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
