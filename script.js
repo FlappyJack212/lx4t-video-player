@@ -69,8 +69,6 @@ const batBtn = document.getElementById('batBtn');
 const pumpkinBtn = document.getElementById('pumpkinBtn');
 
 // Comments elements
-const commentsToggle = document.getElementById('commentsToggle');
-const commentsContainer = document.getElementById('commentsContainer');
 const commentInput = document.getElementById('commentInput');
 const addCommentBtn = document.getElementById('addCommentBtn');
 const commentsList = document.getElementById('commentsList');
@@ -1321,17 +1319,7 @@ function createPumpkinEffect() {
 }
 
 // Comments Functions
-function toggleComments() {
-    isCommentsVisible = !isCommentsVisible;
-    
-    if (isCommentsVisible) {
-        commentsContainer.classList.remove('hidden');
-        commentsToggle.textContent = 'Hide Comments';
-    } else {
-        commentsContainer.classList.add('hidden');
-        commentsToggle.textContent = 'Show Comments';
-    }
-}
+// toggleComments removed - comments are always visible in YouTube layout
 
 function addComment() {
     const text = commentInput.value.trim();
@@ -1522,7 +1510,6 @@ themeBtn.addEventListener('click', toggleTheme);
 spookyBtn.addEventListener('click', createGhostEffect);
 batBtn.addEventListener('click', createBatEffect);
 pumpkinBtn.addEventListener('click', createPumpkinEffect);
-commentsToggle.addEventListener('click', toggleComments);
 addCommentBtn.addEventListener('click', addComment);
 commentInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
