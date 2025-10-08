@@ -103,7 +103,7 @@ function renderVideos(videos) {
                 magnetUri: magnetUri
             }));
             
-            window.location.href = '/index.html?autoplay=' + encodeURIComponent(magnetUri);
+            window.location.href = '/watch.html?v=' + videoId;
         });
     });
 }
