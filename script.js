@@ -3143,6 +3143,15 @@ async function joinVoiceChannel() {
         voiceToggleBtn.classList.add('active');
         voiceControls.classList.remove('hidden');
         
+        // Add ourselves to voice users list immediately
+        if (!watchParty.voiceUsers) watchParty.voiceUsers = [];
+        watchParty.voiceUsers.push({ 
+            userName: watchParty.userName, 
+            muted: false, 
+            speaking: false 
+        });
+        renderVoiceMembers();
+        
         // Notify server that we joined voice
         if (socket && socket.connected) {
             socket.emit('voice-join', {
@@ -3174,6 +3183,12 @@ function leaveVoiceChannel() {
     if (voiceChat.audioContext) {
         voiceChat.audioContext.close();
         voiceChat.audioContext = null;
+    }
+    
+    // Remove ourselves from voice users
+    if (watchParty.voiceUsers) {
+        watchParty.voiceUsers = watchParty.voiceUsers.filter(u => u.userName !== watchParty.userName);
+        renderVoiceMembers();
     }
     
     voiceChat.active = false;
@@ -3215,6 +3230,25 @@ function setupVoiceDetection(stream) {
         
         // If speaking (volume threshold)
         const isSpeaking = average > 20;
+        
+        // Update local speaking state
+        if (watchParty.voiceUsers) {
+            const localUser = watchParty.voiceUsers.find(u => u.userName === watchParty.userName);
+            if (localUser) {
+                localUser.speaking = isSpeaking;
+                renderVoiceMembers();
+            }
+        }
+        
+        // Show/hide Discord-style speaking overlay
+        const voiceOverlay = document.getElementById('voiceActivityOverlay');
+        if (voiceOverlay) {
+            if (isSpeaking) {
+                voiceOverlay.classList.remove('hidden');
+            } else {
+                voiceOverlay.classList.add('hidden');
+            }
+        }
         
         if (socket && socket.connected && isSpeaking) {
             socket.emit('voice-speaking', {
