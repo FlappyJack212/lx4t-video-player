@@ -51,6 +51,12 @@ async function loadVideo() {
         // Display video info
         displayVideoInfo(video);
         
+        // Set current creator ID
+        if (video.creatorId) {
+            currentCreatorId = video.creatorId;
+            checkSubscription();
+        }
+        
         // Load video via WebTorrent
         if (magnet) {
             loadTorrent(magnet);
@@ -95,7 +101,7 @@ function displayVideoInfo(video) {
             </div>
             <div style="display: flex; gap: 10px;">
                 <button class="subscribe-btn" onclick="tipCreator()">💰 Tip Creator</button>
-                <button class="subscribe-btn" style="background: rgba(255,255,255,0.1);">⭐ Subscribe</button>
+                <button class="subscribe-btn" id="subscribeBtn" style="background: rgba(255,255,255,0.1);" onclick="toggleSubscribe()">⭐ Subscribe</button>
             </div>
         </div>
         
@@ -326,6 +332,60 @@ async function likeComment(commentId) {
         loadComments();
     } catch (error) {
         console.error('Error liking comment:', error);
+    }
+}
+
+// Subscribe functionality
+let currentCreatorId = null;
+
+async function checkSubscription() {
+    if (!currentCreatorId) return;
+    
+    try {
+        const response = await fetch(`/api/subscriptions/check/${currentCreatorId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        const btn = document.getElementById('subscribeBtn');
+        if (data.isSubscribed) {
+            btn.textContent = '✅ Subscribed';
+            btn.style.background = 'linear-gradient(135deg, #00ff00, #00cc00)';
+        }
+    } catch (error) {
+        console.error('Check subscription error:', error);
+    }
+}
+
+async function toggleSubscribe() {
+    if (!currentCreatorId) return;
+    
+    try {
+        const checkRes = await fetch(`/api/subscriptions/check/${currentCreatorId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const checkData = await checkRes.json();
+        
+        if (checkData.isSubscribed) {
+            // Unsubscribe
+            await fetch(`/api/subscriptions/${currentCreatorId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            document.getElementById('subscribeBtn').textContent = '⭐ Subscribe';
+            document.getElementById('subscribeBtn').style.background = 'rgba(255,255,255,0.1)';
+        } else {
+            // Subscribe
+            await fetch(`/api/subscriptions/${currentCreatorId}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            document.getElementById('subscribeBtn').textContent = '✅ Subscribed';
+            document.getElementById('subscribeBtn').style.background = 'linear-gradient(135deg, #00ff00, #00cc00)';
+        }
+    } catch (error) {
+        console.error('Subscribe error:', error);
+        alert('Failed to update subscription');
     }
 }
 

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Recorder - LX4T Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { margin: 0; padding: 0; background: #0f0f0f; }
+        .platform-header { background: #1a1a1a; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 15px 30px; }
+        .platform-logo h1 { color: #ff6600; margin: 0; font-size: 1.5rem; cursor: pointer; }
+        .record-container { max-width: 1200px; margin: 40px auto; padding: 0 40px; }
+        .record-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .preview-section { background: #1a1a1a; border-radius: 12px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .preview-video { width: 100%; background: #000; border-radius: 8px; aspect-ratio: 16/9; }
+        .controls-section { background: #1a1a1a; border-radius: 12px; padding: 30px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .record-btn { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin: 10px 0; transition: transform 0.2s; }
+        .record-btn:hover { transform: translateY(-2px); }
+        .record-btn-start { background: linear-gradient(135deg, #ff0000, #ff4444); color: #fff; }
+        .record-btn-stop { background: linear-gradient(135deg, #ff6600, #ff9500); color: #fff; }
+        .record-btn-download { background: linear-gradient(135deg, #00ff00, #00cc00); color: #fff; }
+        .record-options { margin: 20px 0; }
+        .option-group { margin: 15px 0; }
+        .option-group label { display: block; color: rgba(255, 255, 255, 0.9); margin-bottom: 8px; }
+        .option-group select { width: 100%; padding: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #fff; }
+        .timer { font-size: 2rem; color: #ff0000; text-align: center; margin: 20px 0; font-weight: bold; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <header class="platform-header">
+        <div class="platform-logo"><h1 onclick="window.location.href='/browse-new.html'">🎬 LX4T</h1></div>
+    </header>
+    
+    <div class="record-container">
+        <h1 style="color: #fff; margin-bottom: 30px;">🎥 Screen Recorder</h1>
+        
+        <div class="record-grid">
+            <div class="preview-section">
+                <h3 style="color: #fff; margin: 0 0 20px 0;">Preview</h3>
+                <video id="preview" class="preview-video" autoplay muted></video>
+                <div class="timer" id="timer">00:00:00</div>
+            </div>
+            
+            <div class="controls-section">
+                <h3 style="color: #fff; margin: 0 0 20px 0;">Controls</h3>
+                
+                <div class="record-options">
+                    <div class="option-group">
+                        <label>Record Source:</label>
+                        <select id="recordSource">
+                            <option value="screen">🖥️ Screen</option>
+                            <option value="window">🪟 Window</option>
+                            <option value="tab">📑 Browser Tab</option>
+                        </select>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>Audio:</label>
+                        <select id="audioSource">
+                            <option value="system">🔊 System Audio</option>
+                            <option value="mic">🎤 Microphone</option>
+                            <option value="both">🎵 Both</option>
+                            <option value="none">🔇 None</option>
+                        </select>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label>Quality:</label>
+                        <select id="quality">
+                            <option value="1080">1080p (Full HD)</option>
+                            <option value="720" selected>720p (HD)</option>
+                            <option value="480">480p (SD)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button id="startBtn" class="record-btn record-btn-start">⏺️ Start Recording</button>
+                <button id="stopBtn" class="record-btn record-btn-stop" disabled>⏹️ Stop Recording</button>
+                <button id="downloadBtn" class="record-btn record-btn-download" disabled style="display: none;">💾 Download Recording</button>
+                
+                <div style="margin-top: 20px; padding: 15px; background: rgba(255, 165, 0, 0.1); border: 1px solid rgba(255, 165, 0, 0.3); border-radius: 8px;">
+                    <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 0.875rem;">
+                        💡 <strong>Tip:</strong> After recording, you can upload the video directly to LX4T!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/record.js"></script>
+</body>
+</html>
+
