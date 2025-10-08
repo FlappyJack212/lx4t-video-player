@@ -63,6 +63,7 @@ const uploadStatus = document.getElementById('uploadStatus');
 const themeBtn = document.getElementById('themeBtn');
 const themeIcon = document.querySelector('.theme-icon');
 const themeText = document.querySelector('.theme-text');
+const proUiBtn = document.getElementById('proUiBtn');
 const spookyBtn = document.getElementById('spookyBtn');
 const batBtn = document.getElementById('batBtn');
 const pumpkinBtn = document.getElementById('pumpkinBtn');
@@ -2407,6 +2408,39 @@ function toggleTheme() {
 
 // Initialize theme
 initializeTheme();
+
+// ==========================
+// PRO UI (Professional Mode)
+// ==========================
+function applyProUiMode(enabled) {
+    const rootBody = document.body;
+    if (enabled) {
+        rootBody.classList.add('pro-ui');
+    } else {
+        rootBody.classList.remove('pro-ui');
+    }
+    try { localStorage.setItem('lx4t_pro_ui', String(enabled)); } catch (_) {}
+}
+
+function loadProUiPreference() {
+    try {
+        const value = localStorage.getItem('lx4t_pro_ui');
+        return value === 'true';
+    } catch (_) { return false; }
+}
+
+function toggleProUi() {
+    const current = document.body.classList.contains('pro-ui');
+    applyProUiMode(!current);
+}
+
+// Initialize Pro UI from saved preference
+applyProUiMode(loadProUiPreference());
+
+// Wire button
+if (proUiBtn) {
+    proUiBtn.addEventListener('click', toggleProUi);
+}
 
 // ============================================
 // WATCH PARTY / MOVIE NIGHT SYSTEM (WebSocket)
