@@ -3,807 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LX4T Video Player</title>
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- Socket.io for Watch Parties -->
-    <script src="/socket.io/socket.io.js"></script>
-    
-    <!-- WebTorrent for Streaming -->
-    <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+    <title>LX4T Video Platform - Home</title>
+    <link rel="stylesheet" href="home-style.css">
     
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#ff6600">
+    <meta name="theme-color" content="#0f0f0f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="LX4T Player">
+    <meta name="apple-mobile-web-app-title" content="LX4T">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
-    <!-- Halloween Animated Elements -->
-    <div class="ghost">
-        <div class="ghost-tail">
-            <span></span><span></span><span></span><span></span><span></span>
-        </div>
-    </div>
-    <div class="ghost">
-        <div class="ghost-tail">
-            <span></span><span></span><span></span><span></span><span></span>
-        </div>
-    </div>
-    <div class="ghost">
-        <div class="ghost-tail">
-            <span></span><span></span><span></span><span></span><span></span>
-        </div>
-    </div>
-    <div class="ghost">
-        <div class="ghost-tail">
-            <span></span><span></span><span></span><span></span><span></span>
-        </div>
-    </div>
-    
-    <div class="bat"><div class="bat-body"></div></div>
-    <div class="bat"><div class="bat-body"></div></div>
-    <div class="bat"><div class="bat-body"></div></div>
-    
-    <div class="pumpkin"></div>
-    <div class="pumpkin"></div>
-    
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    
-    <div class="container">
-        <!-- Top Navigation Bar -->
-        <div class="top-nav">
-            <h1 class="logo">LX4T Player</h1>
-            <div class="nav-controls">
-                <button class="nav-btn" id="themeBtn" title="Switch Theme">
-                    <span class="theme-icon">🎃</span>
-                </button>
-                <button class="nav-btn" id="proUiBtn" title="Toggle Pro UI">✨</button>
-            </div>
-        </div>
-
-        <!-- Main Content Area -->
-        <div class="main-layout">
-            <!-- Primary Content -->
-            <div class="primary-content">
-                <!-- Video Player -->
-                <div class="video-container" id="videoContainer">
-            <button class="mini-player-close" id="miniPlayerClose">×</button>
-            
-            <video id="videoPlayer" class="video-player" poster="https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217">
-                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.webm" type="video/webm">
-                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.ogv" type="video/ogg">
-                Your browser does not support the video tag.
-            </video>
-            
-            <!-- Voice Activity Indicator (Discord-style overlay) -->
-            <div class="voice-activity-overlay hidden" id="voiceActivityOverlay">
-                <div class="voice-activity-content">
-                    <div class="voice-activity-avatar">
-                        <div class="voice-activity-pulse"></div>
-                        <div class="voice-activity-icon">🎙️</div>
-                    </div>
-                    <div class="voice-activity-text">
-                        <div class="voice-activity-name">You're speaking</div>
-                        <div class="voice-activity-level">
-                            <div class="voice-level-bar"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Video Overlay Subtitles -->
-            <div class="video-subtitle-overlay" id="videoSubtitleOverlay"></div>
-            
-            <!-- Enhanced Loading Spinner -->
-            <div class="video-loading" id="videoLoading">
-                <div class="loading-spinner-large">
-                    <div class="spinner-ring"></div>
-                    <div class="spinner-ring"></div>
-                    <div class="spinner-ring"></div>
-                </div>
-                <div class="loading-text">Loading video...</div>
-                <div class="loading-progress" id="loadingProgress">
-                    <div class="loading-progress-bar" id="loadingProgressBar"></div>
-                </div>
-            </div>
-            
-            <!-- Error Overlay -->
-            <div class="video-error" id="videoError">
-                <div class="error-content">
-                    <div class="error-icon">⚠️</div>
-                    <div class="error-title">Video Error</div>
-                    <div class="error-message" id="errorMessage">Failed to load video</div>
-                    <button class="error-retry" id="errorRetry">🔄 Retry</button>
-                </div>
-            </div>
-            
-            <!-- Custom Controls -->
-            <div class="controls" id="controls">
-                <!-- Progress Bar -->
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressBar">
-                        <div class="progress-filled" id="progressFilled"></div>
-                        <!-- Thumbnail Preview -->
-                        <div class="thumbnail-preview hidden" id="thumbnailPreview">
-                            <div class="thumbnail-image" id="thumbnailImage">
-                                <div class="thumbnail-loading">🎬</div>
-                            </div>
-                            <div class="thumbnail-time" id="thumbnailTime">0:00</div>
-                        </div>
-                    </div>
-                    <div class="time-display">
-                        <span id="currentTime">0:00</span>
-                        <span id="duration">0:00</span>
-                    </div>
-                </div>
-                
-                <!-- Control Buttons -->
-                <div class="controls-row">
-                    <div class="controls-left">
-                        <button class="control-btn" id="playPauseBtn">
-                            <svg class="icon play-icon" viewBox="0 0 24 24">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                            <svg class="icon pause-icon hidden" viewBox="0 0 24 24">
-                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-                            </svg>
-                        </button>
-                        
-                        <button class="control-btn" id="rewindBtn">
-                            <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-                            </svg>
-                        </button>
-                        
-                        <button class="control-btn" id="forwardBtn">
-                            <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
-                            </svg>
-                        </button>
-                        
-                        <!-- Volume Control -->
-                        <div class="volume-control">
-                            <button class="control-btn" id="volumeBtn">
-                                <svg class="icon volume-high" viewBox="0 0 24 24">
-                                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                                </svg>
-                                <svg class="icon volume-muted hidden" viewBox="0 0 24 24">
-                                    <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
-                                </svg>
-                            </button>
-                            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="100">
-                        </div>
-                    </div>
-                    
-                    <div class="controls-right">
-                        <!-- Previous/Next Video -->
-                        <button class="control-btn" id="prevVideoBtn" title="Previous Video">
-                            <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
-                            </svg>
-                        </button>
-                        
-                        <button class="control-btn" id="nextVideoBtn" title="Next Video">
-                            <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
-                            </svg>
-                        </button>
-                        
-                        <!-- Video Quality -->
-                        <div class="quality-control">
-                            <button class="control-btn" id="qualityBtn" title="Quality">
-                                <svg class="icon" viewBox="0 0 24 24">
-                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                </svg>
-                                <span id="qualityText">Auto</span>
-                            </button>
-                            <div class="quality-menu hidden" id="qualityMenu">
-                                <button class="quality-option active" data-quality="auto">Auto</button>
-                                <button class="quality-option" data-quality="1080">1080p</button>
-                                <button class="quality-option" data-quality="720">720p</button>
-                                <button class="quality-option" data-quality="480">480p</button>
-                                <button class="quality-option" data-quality="360">360p</button>
-                            </div>
-                        </div>
-                        
-                        <!-- Playback Speed -->
-                        <div class="speed-control">
-                            <button class="control-btn" id="speedBtn">1x</button>
-                            <div class="speed-menu hidden" id="speedMenu">
-                                <button class="speed-option" data-speed="0.25">0.25x</button>
-                                <button class="speed-option" data-speed="0.5">0.5x</button>
-                                <button class="speed-option" data-speed="0.75">0.75x</button>
-                                <button class="speed-option active" data-speed="1">Normal</button>
-                                <button class="speed-option" data-speed="1.25">1.25x</button>
-                                <button class="speed-option" data-speed="1.5">1.5x</button>
-                                <button class="speed-option" data-speed="2">2x</button>
-                            </div>
-                        </div>
-                        
-                        <!-- Loop/Repeat -->
-                        <button class="control-btn" id="loopBtn" title="Loop: Off">
-                            <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
-                            </svg>
-                        </button>
-                        
-                        <!-- Mini Player -->
-                        <button class="control-btn" id="miniPlayerBtn" title="Mini Player">
-                            <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-8-8.5v5l4-2.5-4-2.5z"/>
-                            </svg>
-                        </button>
-                        
-                        <!-- Bookmark -->
-                        <button class="control-btn" id="bookmarkBtn" title="Bookmark">
-                            <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
-                            </svg>
-                        </button>
-                        
-                        <!-- Picture in Picture -->
-                        <button class="control-btn" id="pipBtn">
-                            <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 1.98 2 1.98h18c1.1 0 2-.88 2-1.98V5c0-1.1-.9-2-2-2zm0 16.01H3V4.98h18v14.03z"/>
-                            </svg>
-                        </button>
-                        
-                        <!-- Download -->
-                        <button class="control-btn" id="downloadBtn" title="Download Video">
-                            <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                            </svg>
-                        </button>
-                        
-                        <!-- Fullscreen -->
-                        <button class="control-btn" id="fullscreenBtn">
-                            <svg class="icon fullscreen-open" viewBox="0 0 24 24">
-                                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
-                            </svg>
-                            <svg class="icon fullscreen-close hidden" viewBox="0 0 24 24">
-                                <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Loading Spinner -->
-            <div class="loading-spinner hidden" id="loadingSpinner">
-                <div class="spinner"></div>
-            </div>
-            
-            <!-- Center Play Button Overlay -->
-            <div class="play-overlay" id="playOverlay">
-                <button class="play-overlay-btn">
+    <!-- Top Navigation -->
+    <nav class="top-navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="menu-btn" id="menuBtn">
                     <svg viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </button>
+                <a href="index.html" class="brand">
+                    <span class="brand-icon">🎬</span>
+                    <span class="brand-text">LX4T</span>
+                </a>
+            </div>
+            
+            <div class="nav-center">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search videos...">
+                    <button class="search-btn" id="searchBtn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="nav-right">
+                <button class="icon-btn" id="uploadBtn" title="Upload">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 20h14v-2H5v2zM5 10h4v6h6v-6h4l-7-7-7 7z"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="themeBtn" title="Toggle Theme">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 2c-1.05 0-2.05.16-3 .46 4.06 1.27 7 5.06 7 9.54 0 4.48-2.94 8.27-7 9.54.95.3 1.95.46 3 .46 5.52 0 10-4.48 10-10S14.52 2 9 2z"/>
+                    </svg>
+                </button>
+                <button class="icon-btn user-btn" id="userBtn" title="Account">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
                     </svg>
                 </button>
             </div>
         </div>
+    </nav>
 
-        <!-- Video Metadata -->
-        <div class="video-metadata">
-            <h2 class="video-title" id="videoTitle">Big Buck Bunny</h2>
-            <div class="video-stats">
-                <span id="videoViews">0 views</span>
-                <div class="video-actions">
-                    <button class="action-btn" id="downloadBtn" title="Download">
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                        </svg>
-                        <span>Download</span>
-                    </button>
-                    <button class="action-btn" id="bookmarkBtn" title="Bookmark">
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
-                        </svg>
-                        <span>Save</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Description Section -->
-        <div class="description-section">
-            <button class="description-toggle" id="descriptionToggle">
-                <span>Description</span>
-                <svg class="chevron" viewBox="0 0 24 24">
-                    <path d="M7 10l5 5 5-5z"/>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <a href="index.html" class="sidebar-item active">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
                 </svg>
-            </button>
-            <div class="description-content hidden" id="descriptionContent">
-                <p>HTML5 video player with custom controls, playlist management, and advanced features.</p>
-            </div>
-        </div>
-
-        <!-- Comments Section (moved here) -->
-        <div class="comments-section">
-            <div class="comments-header">
-                <h3><span id="commentCount">0</span> Comments</h3>
-            </div>
-            <div class="comment-form">
-                <input type="text" id="commentInput" placeholder="Add a comment..." maxlength="200">
-                <button id="addCommentBtn">Comment</button>
-            </div>
-            <div class="comments-list" id="commentsList">
-                <!-- Comments will be added here -->
-            </div>
-        </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Playlist Section (moved to sidebar) -->
-                <div class="playlist-section">
-            <h3>🎵 Video Playlist</h3>
-            <div class="playlist-container">
-                <div class="playlist-header">
-                    <button class="playlist-btn" id="addVideoBtn">+ Add Video</button>
-                    <button class="playlist-btn" id="shuffleBtn">🔀 Shuffle</button>
-                    <button class="playlist-btn" id="clearPlaylistBtn">🗑️ Clear</button>
-                </div>
-                <div class="playlist-list" id="playlistList">
-                    <!-- Playlist items will be added here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Upload Section (compact in sidebar) -->
-        <div class="sidebar-upload">
-            <button class="upload-toggle-btn" id="uploadToggleBtn">
-                📁 Add Video
-            </button>
-            <div class="upload-dropdown hidden" id="uploadDropdown">
-                <input type="file" id="fileInput" multiple accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-msvideo,video/x-matroska,video/x-flv,video/3gpp,video/x-m4v" style="display: none;">
-                <button class="dropdown-btn" id="uploadBtn">Upload File</button>
-                <div class="url-input-compact">
-                    <input type="text" id="videoUrl" placeholder="Or paste video URL">
-                    <button id="loadVideoBtn">Load</button>
-                </div>
-                <div class="url-input-compact">
-                    <input type="text" id="magnetLink" placeholder="🧲 Paste magnet link">
-                    <button id="loadTorrentBtn">Stream</button>
-                </div>
-                <button class="dropdown-btn" id="saveMagnetBtn">💾 Save Magnet</button>
-                <button class="dropdown-btn" id="torrentHelpBtn">🧲 How to get torrents?</button>
-                <div class="saved-magnets" id="savedMagnets">
-                    <!-- Saved magnet links appear here -->
-                </div>
-            </div>
-        </div>
-        
-        <!-- Torrent Help Modal -->
-        <div class="torrent-help-modal hidden" id="torrentHelpModal">
-            <div class="torrent-help-content">
-                <div class="torrent-help-header">
-                    <h3>🧲 How to Stream Torrents</h3>
-                    <button class="torrent-help-close" id="torrentHelpClose">✕</button>
-                </div>
-                <div class="torrent-help-body">
-                    <div class="help-step">
-                        <h4>Step 1: Find a Torrent</h4>
-                        <p>Visit popular torrent sites (search "movie torrents" on Google)</p>
-                        <p><strong>Popular sites:</strong> YTS, 1337x, The Pirate Bay, RARBG alternatives</p>
-                    </div>
-                    <div class="help-step">
-                        <h4>Step 2: Copy Magnet Link</h4>
-                        <p>Look for a "Magnet Link" or 🧲 icon. Right-click and copy the link.</p>
-                        <p>Magnet links start with: <code>magnet:?xt=urn:btih:...</code></p>
-                    </div>
-                    <div class="help-step">
-                        <h4>Step 3: Paste and Stream</h4>
-                        <p>Paste the magnet link in the input box above and click "Stream"!</p>
-                        <p>The video will start playing as it downloads.</p>
-                    </div>
-                    <div class="help-note">
-                        <p><strong>⚠️ Legal Notice:</strong> Only download/stream content you have rights to access. Use torrents responsibly.</p>
-                        <p><strong>💡 Tip:</strong> Look for torrents with many seeders for faster streaming!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- WebTorrent Status -->
-        <div class="torrent-status hidden" id="torrentStatus">
-            <div class="torrent-info">
-                <div class="torrent-name" id="torrentName">Loading torrent...</div>
-                <div class="torrent-progress">
-                    <div class="torrent-progress-bar">
-                        <div class="torrent-progress-fill" id="torrentProgressFill"></div>
-                    </div>
-                    <span id="torrentProgressText">0%</span>
-                </div>
-                <div class="torrent-stats">
-                    <span>⬇️ <span id="downloadSpeed">0 KB/s</span></span>
-                    <span>⬆️ <span id="uploadSpeed">0 KB/s</span></span>
-                    <span>👥 <span id="numPeers">0 peers</span></span>
-                </div>
-                <button class="torrent-close" id="closeTorrent">✕ Stop</button>
-            </div>
-        </div>
-            </div>
-        </div>
-
-        <!-- Collapsible Sections (moved to bottom) -->
-        <div class="extra-features">
-        <!-- Video Input Section (full upload area) -->
-        <div class="video-input-full hidden" id="videoInputFull">
-            <h3>📁 Add Your Own Videos</h3>
+                <span>Home</span>
+            </a>
+            <a href="#" class="sidebar-item" data-filter="trending">
+                <svg viewBox="0 0 24 24">
+                    <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                </svg>
+                <span>Trending</span>
+            </a>
+            <a href="#" class="sidebar-item" data-filter="library">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/>
+                </svg>
+                <span>Library</span>
+            </a>
+            <a href="#" class="sidebar-item" data-filter="history">
+                <svg viewBox="0 0 24 24">
+                    <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+                </svg>
+                <span>History</span>
+            </a>
             
-            <!-- File Upload -->
-            <div class="upload-section">
-                <div class="upload-area" id="uploadArea">
-                    <div class="upload-content">
-                        <div class="upload-icon">📁</div>
-                        <h4>Drop video files here or click to browse</h4>
-                        <p>Supports MP4, WebM, OGG, MOV, AVI, MKV, FLV, 3GP, M4V</p>
-                        <div class="format-support">
-                            <small>✅ MP4 (H.264) • ✅ WebM (VP8/VP9) • ✅ OGG (Theora) • ✅ MOV (QuickTime) • ✅ AVI • ✅ MKV • ✅ FLV • ✅ 3GP • ✅ M4V</small>
-                        </div>
-                        <div class="sample-videos">
-                            <h5>🎬 Try These Free Videos:</h5>
-                            <div class="video-links">
-                                <button class="video-link-btn" data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">Big Buck Bunny</button>
-                                <button class="video-link-btn" data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4">Elephant's Dream</button>
-                                <button class="video-link-btn" data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4">Sintel</button>
-                                <button class="video-link-btn" data-url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4">Tears of Steel</button>
-                            </div>
-                        </div>
-                        <input type="file" id="fileInput" multiple accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-msvideo,video/x-matroska,video/x-flv,video/3gpp,video/x-m4v" style="display: none;">
-                        <button class="upload-btn" id="uploadBtn">Choose Files</button>
-                    </div>
-                </div>
-                <div class="upload-progress hidden" id="uploadProgress">
-                    <div class="progress-bar-upload">
-                        <div class="progress-fill-upload" id="progressFillUpload"></div>
-                    </div>
-                    <div class="upload-status" id="uploadStatus">Uploading...</div>
-                </div>
-            </div>
+            <div class="sidebar-divider"></div>
             
-            <!-- URL Input -->
-            <div class="url-section">
-                <label>Or enter video URL:</label>
-                <input type="text" id="videoUrlFull" placeholder="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" value="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
-                <button id="loadVideoFullBtn">Load Video</button>
-            </div>
+            <div class="sidebar-section-title">CATEGORIES</div>
+            <a href="#" class="sidebar-item" data-category="movies">
+                <svg viewBox="0 0 24 24">
+                    <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
+                </svg>
+                <span>Movies</span>
+            </a>
+            <a href="#" class="sidebar-item" data-category="music">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                </svg>
+                <span>Music</span>
+            </a>
+            <a href="#" class="sidebar-item" data-category="gaming">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15.5 13.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm4-3c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm-1.97 8.19c-1.53.83-3.23 1.31-5.03 1.31-2.12 0-4.08-.64-5.72-1.72C4.41 17.54 3 15.37 3 12.88c0-1.11.22-2.16.62-3.12.39-.95.95-1.8 1.64-2.49.69-.69 1.54-1.25 2.49-1.64.96-.4 2.01-.62 3.12-.62 1.11 0 2.16.22 3.12.62.95.39 1.8.95 2.49 1.64.69.69 1.25 1.54 1.64 2.49.4.96.62 2.01.62 3.12 0 2.49-1.41 4.66-3.78 5.4zM7.5 13.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5S5.17 12 6 12s1.5.67 1.5 1.5z"/>
+                </svg>
+                <span>Gaming</span>
+            </a>
+            <a href="#" class="sidebar-item" data-category="sports">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 3.3l1.35-.95c1.82.56 3.37 1.76 4.38 3.34l-.39 1.34-1.35.46L13 6.7V5.3zm-3.35-.95L11 5.3v1.4L7.01 9.49l-1.35-.46-.39-1.34c1.01-1.58 2.56-2.78 4.38-3.34zM7.08 17.11l-1.14.1C4.73 15.81 4 13.99 4 12c0-.69.1-1.36.26-2l1.18.85L7 13.35v2.41l-.92 1.35zm2.48 2.12l-.68 1.06C9.88 20.74 10.93 21 12 21c1.07 0 2.12-.26 3.12-.71l-.68-1.06-2.44-.67-2.44.67zm10.26-1.91l-1.14-.1-.92-1.35v-2.41l1.56-2.5 1.18-.85c.16.64.26 1.31.26 2 0 1.99-.73 3.81-1.94 5.21z"/>
+                </svg>
+                <span>Sports</span>
+            </a>
+            <a href="#" class="sidebar-item" data-category="education">
+                <svg viewBox="0 0 24 24">
+                    <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
+                </svg>
+                <span>Education</span>
+            </a>
         </div>
+    </aside>
 
-        <!-- Keyboard Shortcuts Help Modal -->
-        <div class="help-modal hidden" id="helpModal">
-            <div class="help-content">
-                <div class="help-header">
-                    <h2>⌨️ Keyboard Shortcuts</h2>
-                    <button class="help-close" id="helpClose">✕</button>
-                </div>
-                <div class="help-body">
-                    <div class="shortcut-category">
-                        <h3>🎮 Playback Controls</h3>
-                        <div class="shortcut-item">
-                            <span class="shortcut-key">Space</span>
-                            <span class="shortcut-key">K</span>
-                            <span class="shortcut-desc">Play/Pause</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <span class="shortcut-key">←</span>
-                            <span class="shortcut-desc">Rewind 5 seconds</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <span class="shortcut-key">→</span>
-                            <span class="shortcut-desc">Forward 5 seconds</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <span class="shortcut-key">↑</span>
-                            <span class="shortcut-desc">Volume up</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <span class="shortcut-key">↓</span>
-                            <span class="shortcut-desc">Volume down</span>
-                        </div>
-                    </div>
-                    
-                    <div class="shortcut-category">
-                        <h3>🎵 Playlist Controls</h3>
-                        <div class="shortcut-item">
-                            <span class="shortcut-key">N</span>
-                            <span class="shortcut-desc">Next video</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <span class="shortcut-key">P</span>
-                            <span class="shortcut-desc">Previous video</span>
-                        </div>
-                    </div>
-                    
-                    <div class="shortcut-category">
-                        <h3>🎯 Navigation</h3>
-                        <div class="shortcut-item">
-                            <span class="shortcut-key">F</span>
-                            <span class="shortcut-desc">Toggle fullscreen</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <span class="shortcut-key">M</span>
-                            <span class="shortcut-desc">Mute/Unmute</span>
-                        </div>
-                        <div class="shortcut-item">
-                            <span class="shortcut-key">0-9</span>
-                            <span class="shortcut-desc">Jump to 0%-90%</span>
-                        </div>
-                    </div>
-                    
-                    <div class="shortcut-category">
-                        <h3>💾 Download</h3>
-                        <div class="shortcut-item">
-                            <span class="shortcut-desc">Click download button (💾) to save video</span>
-                        </div>
-                    </div>
-                    
-                    <div class="shortcut-category">
-                        <h3>❓ Help</h3>
-                        <div class="shortcut-item">
-                            <span class="shortcut-key">?</span>
-                            <span class="shortcut-desc">Show/hide this help</span>
-                        </div>
-                    </div>
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Welcome to LX4T</h1>
+                <p class="hero-subtitle">Your ultimate video streaming platform</p>
+                <div class="hero-actions">
+                    <a href="watch.html" class="hero-btn primary">Start Watching</a>
+                    <a href="#trending" class="hero-btn secondary">Explore Trending</a>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Watch Party Section -->
-        <div class="watch-party-section">
-            <div class="party-header">
-                <h3>🎬 Movie Night / Watch Party</h3>
-                <button class="party-toggle" id="partyToggle">Create/Join Party</button>
+        <!-- Video Categories -->
+        <section class="video-section">
+            <div class="section-header">
+                <h2>Trending Now</h2>
+                <a href="#" class="see-all">See all</a>
             </div>
-            
-            <div class="party-container hidden" id="partyContainer">
-                <!-- Create Party -->
-                <div class="party-create" id="partyCreate">
-                    <h4>🎉 Host a Movie Night</h4>
-                    <div class="party-form">
-                        <input type="text" id="partyName" placeholder="Party name (e.g., Friday Movie Night)" maxlength="50">
-                        <input type="text" id="hostName" placeholder="Your name" maxlength="20">
-                        <input type="password" id="partyPassword" placeholder="Password (optional)" maxlength="20">
-                        <button id="createPartyBtn">🎬 Create Party</button>
-                    </div>
-                    
-                    <div class="party-divider">OR</div>
-                    
-                    <h4>🎪 Join Existing Party</h4>
-                    <div class="party-form">
-                        <input type="text" id="joinPartyId" placeholder="Party ID" maxlength="10">
-                        <input type="text" id="joinName" placeholder="Your name" maxlength="20">
-                        <input type="password" id="joinPassword" placeholder="Password (if required)" maxlength="20">
-                        <button id="joinPartyBtn">🚪 Join Party</button>
-                    </div>
-                    
-                    <div class="active-parties">
-                        <h4>🔥 Active Parties</h4>
-                        <div id="activePartiesList" class="parties-list">
-                            <!-- Active parties will appear here -->
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Party Room (Hidden until joined) -->
-                <div class="party-room hidden" id="partyRoom">
-                    <div class="party-info">
-                        <div class="party-details">
-                            <span class="party-id-display">Party ID: <strong id="currentPartyId"></strong></span>
-                            <button class="copy-id-btn" id="copyIdBtn" title="Copy Party ID">📋</button>
-                            <button class="leave-party-btn" id="leavePartyBtn">🚪 Leave Party</button>
-                        </div>
-                        <div class="party-status">
-                            <span id="partyStatus">🟢 Connected</span>
-                            <span id="partyUserCount">👥 1 viewer</span>
-                        </div>
-                    </div>
-                    
-                    <div class="party-controls">
-                        <div class="host-controls" id="hostControls">
-                            <span class="host-badge">👑 You're the Host</span>
-                            <p>Your actions control everyone's video!</p>
-                        </div>
-                        <div class="guest-notice" id="guestNotice">
-                            <span>👤 Guest Mode</span>
-                            <p>Video syncs with the host</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Voice Channel -->
-                    <div class="voice-channel" id="voiceChannel">
-                        <div class="voice-header">
-                            <h4>🎙️ Voice Channel</h4>
-                            <button class="voice-toggle-btn" id="voiceToggleBtn">Join Voice</button>
-                        </div>
-                        <div class="voice-members" id="voiceMembers">
-                            <!-- Voice participants appear here -->
-                        </div>
-                        <div class="voice-controls hidden" id="voiceControls">
-                            <button class="voice-control-btn" id="muteBtn" title="Mute/Unmute">
-                                <svg viewBox="0 0 24 24" class="mic-on">
-                                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
-                                </svg>
-                                <svg viewBox="0 0 24 24" class="mic-off hidden">
-                                    <path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/>
-                                </svg>
-                            </button>
-                            <button class="voice-control-btn" id="deafenBtn" title="Deafen">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                                </svg>
-                            </button>
-                            <button class="voice-control-btn danger" id="leaveVoiceBtn" title="Leave Voice">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Party Chat -->
-                    <div class="party-chat">
-                        <div class="chat-header">
-                            <h4>💬 Party Chat</h4>
-                            <button class="chat-toggle" id="chatMinimize">−</button>
-                        </div>
-                        <div class="chat-messages" id="partyChatMessages">
-                            <!-- Messages appear here -->
-                        </div>
-                        <div class="chat-input-container">
-                            <input type="text" id="partyChatInput" placeholder="Say something..." maxlength="200">
-                            <button id="sendChatBtn">Send</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Users List -->
-                    <div class="party-users">
-                        <h4>👥 Viewers (<span id="viewerCount">1</span>)</h4>
-                        <div class="users-list" id="usersList">
-                            <!-- Users appear here -->
-                        </div>
-                    </div>
-                    
-                    <!-- Reaction Emojis -->
-                    <div class="party-reactions">
-                        <button class="reaction-btn" data-emoji="👍">👍</button>
-                        <button class="reaction-btn" data-emoji="❤️">❤️</button>
-                        <button class="reaction-btn" data-emoji="😂">😂</button>
-                        <button class="reaction-btn" data-emoji="😮">😮</button>
-                        <button class="reaction-btn" data-emoji="🔥">🔥</button>
-                        <button class="reaction-btn" data-emoji="🎉">🎉</button>
-                    </div>
-                </div>
+            <div class="video-grid" id="trendingGrid">
+                <!-- Video cards will be inserted here -->
             </div>
-        </div>
+        </section>
 
-        <!-- Analytics Dashboard -->
-        <div class="analytics-section">
-            <div class="analytics-header">
-                <h3>📊 Video Analytics</h3>
-                <button class="analytics-toggle" id="analyticsToggle">Show Stats</button>
+        <section class="video-section">
+            <div class="section-header">
+                <h2>Popular Movies</h2>
+                <a href="#" class="see-all">See all</a>
             </div>
-            <div class="analytics-container hidden" id="analyticsContainer">
-                <div class="analytics-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">👀</div>
-                        <div class="stat-value" id="viewCount">0</div>
-                        <div class="stat-label">Views</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⏱️</div>
-                        <div class="stat-value" id="watchTime">0:00</div>
-                        <div class="stat-label">Watch Time</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">💬</div>
-                        <div class="stat-value" id="commentCount">0</div>
-                        <div class="stat-label">Comments</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📥</div>
-                        <div class="stat-value" id="downloadCount">0</div>
-                        <div class="stat-label">Downloads</div>
-                    </div>
-                </div>
-                <div class="analytics-chart">
-                    <h4>📈 Engagement Timeline</h4>
-                    <div class="timeline-chart" id="timelineChart">
-                        <!-- Chart will be generated here -->
-                    </div>
-                </div>
+            <div class="video-grid" id="moviesGrid">
+                <!-- Video cards will be inserted here -->
             </div>
-        </div>
+        </section>
 
-        <!-- Video Chapters/Timestamps -->
-        <div class="chapters-section">
-            <div class="chapters-header">
-                <h3>📖 Video Chapters</h3>
-                <button class="chapters-toggle" id="chaptersToggle">Show Chapters</button>
+        <section class="video-section">
+            <div class="section-header">
+                <h2>Music Videos</h2>
+                <a href="#" class="see-all">See all</a>
             </div>
-            <div class="chapters-container hidden" id="chaptersContainer">
-                <div class="chapters-list" id="chaptersList">
-                    <!-- Chapters will be added here -->
-                </div>
-                <div class="chapter-form">
-                    <input type="text" id="chapterTime" placeholder="Time (MM:SS)" maxlength="5">
-                    <input type="text" id="chapterTitle" placeholder="Chapter title" maxlength="50">
-                    <button id="addChapterBtn">Add Chapter</button>
-                </div>
+            <div class="video-grid" id="musicGrid">
+                <!-- Video cards will be inserted here -->
             </div>
-        </div>
+        </section>
 
-        </div>
-
-        <!-- Subtitles/Captions -->
-        <div class="subtitles-section hidden">
-            <div class="subtitles-header">
-                <h3>📝 Subtitles & Captions</h3>
-                <button class="subtitles-toggle" id="subtitlesToggle">Show Subtitles</button>
+        <section class="video-section">
+            <div class="section-header">
+                <h2>Recently Added</h2>
+                <a href="#" class="see-all">See all</a>
             </div>
-            <div class="subtitles-container hidden" id="subtitlesContainer">
-                <div class="subtitle-controls">
-                    <button class="subtitle-btn" id="subtitleOnOff">Subtitles: OFF</button>
-                    <button class="subtitle-btn" id="uploadSubtitleBtn">Upload .srt/.vtt</button>
-                </div>
-                <div class="subtitle-display" id="subtitleDisplay">
-                    <!-- Active subtitle will show here -->
-                </div>
-                <div class="subtitle-form">
-                    <textarea id="subtitleText" placeholder="Enter subtitle text..." rows="3" maxlength="200"></textarea>
-                    <input type="text" id="subtitleStartTime" placeholder="Start time (MM:SS)" maxlength="5">
-                    <input type="text" id="subtitleEndTime" placeholder="End time (MM:SS)" maxlength="5">
-                    <button id="addSubtitleBtn">Add Subtitle</button>
-                </div>
-                <div class="subtitles-list" id="subtitlesList">
-                    <!-- Subtitles will be added here -->
-                </div>
+            <div class="video-grid" id="recentGrid">
+                <!-- Video cards will be inserted here -->
             </div>
-        </div>
-        </div>
+        </section>
+    </main>
 
-        <!-- Mobile Gesture Instructions -->
-        <div class="mobile-gestures hidden" id="mobileGestures">
-            <div class="gesture-overlay">
-                <div class="gesture-content">
-                    <h3>📱 Mobile Gestures</h3>
-                    <div class="gesture-list">
-                        <div class="gesture-item">
-                            <span class="gesture-icon">👆</span>
-                            <span class="gesture-desc">Tap to play/pause</span>
-                        </div>
-                        <div class="gesture-item">
-                            <span class="gesture-icon">👈👉</span>
-                            <span class="gesture-desc">Swipe left/right to seek</span>
-                        </div>
-                        <div class="gesture-item">
-                            <span class="gesture-icon">👆👇</span>
-                            <span class="gesture-desc">Swipe up/down for volume</span>
-                        </div>
-                        <div class="gesture-item">
-                            <span class="gesture-icon">🤏</span>
-                            <span class="gesture-desc">Pinch to zoom</span>
-                        </div>
-                    </div>
-                    <button class="gesture-close" id="gestureClose">Got it!</button>
+    <!-- Video Card Template (Hidden) -->
+    <template id="videoCardTemplate">
+        <div class="video-card">
+            <a href="watch.html" class="video-thumbnail">
+                <img src="" alt="" loading="lazy">
+                <div class="video-duration">10:24</div>
+                <div class="video-overlay">
+                    <svg class="play-icon" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </a>
+            <div class="video-info">
+                <a href="watch.html" class="video-title"></a>
+                <div class="video-meta">
+                    <span class="video-channel"></span>
+                    <span class="video-stats"></span>
                 </div>
             </div>
         </div>
+    </template>
 
-    </div>
-    
-    <script src="script.js"></script>
+    <script src="home-script.js"></script>
 </body>
 </html>
-

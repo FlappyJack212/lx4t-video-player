@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch - LX4T Video Player</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Socket.io for Watch Parties -->
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <!-- WebTorrent for Streaming -->
+    <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#ff6600">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LX4T Player">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation Bar -->
+        <div class="top-nav">
+            <div class="nav-left-watch">
+                <a href="index.html" class="back-btn" title="Back to Home">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                </a>
+                <a href="index.html" class="logo">LX4T Player</a>
+            </div>
+            <div class="nav-controls">
+                <button class="nav-btn" id="themeBtn" title="Switch Theme">
+                    <span class="theme-icon">🎃</span>
+                </button>
+                <button class="nav-btn" id="proUiBtn" title="Toggle Pro UI">✨</button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-layout">
+            <!-- Primary Content -->
+            <div class="primary-content">
+                <!-- Video Player -->
+                <div class="video-container" id="videoContainer">
+            <button class="mini-player-close" id="miniPlayerClose">×</button>
+            
+            <video id="videoPlayer" class="video-player" poster="https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217">
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.webm" type="video/webm">
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.ogv" type="video/ogg">
+                Your browser does not support the video tag.
+            </video>
+            
+            <!-- Voice Activity Indicator (Discord-style overlay) -->
+            <div class="voice-activity-overlay hidden" id="voiceActivityOverlay">
+                <div class="voice-activity-content">
+                    <div class="voice-activity-avatar">
+                        <div class="voice-activity-pulse"></div>
+                        <div class="voice-activity-icon">🎙️</div>
+                    </div>
+                    <div class="voice-activity-text">
+                        <div class="voice-activity-name">You're speaking</div>
+                        <div class="voice-activity-level">
+                            <div class="voice-level-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Video Overlay Subtitles -->
+            <div class="video-subtitle-overlay" id="videoSubtitleOverlay"></div>
+            
+            <!-- Enhanced Loading Spinner -->
+            <div class="video-loading" id="videoLoading">
+                <div class="loading-spinner-large">
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring"></div>
+                </div>
+                <div class="loading-text">Loading video...</div>
+                <div class="loading-progress" id="loadingProgress">
+                    <div class="loading-progress-bar" id="loadingProgressBar"></div>
+                </div>
+            </div>
+            
+            <!-- Error Overlay -->
+            <div class="video-error" id="videoError">
+                <div class="error-content">
+                    <div class="error-icon">⚠️</div>
+                    <div class="error-title">Video Error</div>
+                    <div class="error-message" id="errorMessage">Failed to load video</div>
+                    <button class="error-retry" id="errorRetry">🔄 Retry</button>
+                </div>
+            </div>
+            
+            <!-- Custom Controls -->
+            <div class="controls" id="controls">
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-filled" id="progressFilled"></div>
+                        <!-- Thumbnail Preview -->
+                        <div class="thumbnail-preview hidden" id="thumbnailPreview">
+                            <div class="thumbnail-image" id="thumbnailImage">
+                                <div class="thumbnail-loading">🎬</div>
+                            </div>
+                            <div class="thumbnail-time" id="thumbnailTime">0:00</div>
+                        </div>
+                    </div>
+                    <div class="time-display">
+                        <span id="currentTime">0:00</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                </div>
+                
+                <!-- Control Buttons -->
+                <div class="controls-row">
+                    <div class="controls-left">
+                        <button class="control-btn" id="playPauseBtn">
+                            <svg class="icon play-icon" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <svg class="icon pause-icon hidden" viewBox="0 0 24 24">
+                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                            </svg>
+                        </button>
+                        
+                        <button class="control-btn" id="rewindBtn">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+                            </svg>
+                        </button>
+                        
+                        <button class="control-btn" id="forwardBtn">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Volume Control -->
+                        <div class="volume-control">
+                            <button class="control-btn" id="volumeBtn">
+                                <svg class="icon volume-high" viewBox="0 0 24 24">
+                                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                                </svg>
+                                <svg class="icon volume-muted hidden" viewBox="0 0 24 24">
+                                    <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                                </svg>
+                            </button>
+                            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="100">
+                        </div>
+                    </div>
+                    
+                    <div class="controls-right">
+                        <!-- Previous/Next Video -->
+                        <button class="control-btn" id="prevVideoBtn" title="Previous Video">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                            </svg>
+                        </button>
+                        
+                        <button class="control-btn" id="nextVideoBtn" title="Next Video">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Video Quality -->
+                        <div class="quality-control">
+                            <button class="control-btn" id="qualityBtn" title="Quality">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                <span id="qualityText">Auto</span>
+                            </button>
+                            <div class="quality-menu hidden" id="qualityMenu">
+                                <button class="quality-option active" data-quality="auto">Auto</button>
+                                <button class="quality-option" data-quality="1080">1080p</button>
+                                <button class="quality-option" data-quality="720">720p</button>
+                                <button class="quality-option" data-quality="480">480p</button>
+                                <button class="quality-option" data-quality="360">360p</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Playback Speed -->
+                        <div class="speed-control">
+                            <button class="control-btn" id="speedBtn">1x</button>
+                            <div class="speed-menu hidden" id="speedMenu">
+                                <button class="speed-option" data-speed="0.25">0.25x</button>
+                                <button class="speed-option" data-speed="0.5">0.5x</button>
+                                <button class="speed-option" data-speed="0.75">0.75x</button>
+                                <button class="speed-option active" data-speed="1">Normal</button>
+                                <button class="speed-option" data-speed="1.25">1.25x</button>
+                                <button class="speed-option" data-speed="1.5">1.5x</button>
+                                <button class="speed-option" data-speed="2">2x</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Loop/Repeat -->
+                        <button class="control-btn" id="loopBtn" title="Loop: Off">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Mini Player -->
+                        <button class="control-btn" id="miniPlayerBtn" title="Mini Player">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-8-8.5v5l4-2.5-4-2.5z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Bookmark -->
+                        <button class="control-btn" id="bookmarkBtn" title="Bookmark">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Picture in Picture -->
+                        <button class="control-btn" id="pipBtn">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 1.98 2 1.98h18c1.1 0 2-.88 2-1.98V5c0-1.1-.9-2-2-2zm0 16.01H3V4.98h18v14.03z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Download -->
+                        <button class="control-btn" id="downloadBtn" title="Download Video">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Fullscreen -->
+                        <button class="control-btn" id="fullscreenBtn">
+                            <svg class="icon fullscreen-open" viewBox="0 0 24 24">
+                                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                            </svg>
+                            <svg class="icon fullscreen-close hidden" viewBox="0 0 24 24">
+                                <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Loading Spinner -->
+            <div class="loading-spinner hidden" id="loadingSpinner">
+                <div class="spinner"></div>
+            </div>
+            
+            <!-- Center Play Button Overlay -->
+            <div class="play-overlay" id="playOverlay">
+                <button class="play-overlay-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Video Metadata -->
+        <div class="video-metadata">
+            <h2 class="video-title" id="videoTitle">Big Buck Bunny</h2>
+            <div class="video-stats">
+                <span id="videoViews">1.2M views</span>
+                <div class="video-actions">
+                    <button class="action-btn" id="likeBtn" title="Like">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/>
+                        </svg>
+                        <span>Like</span>
+                    </button>
+                    <button class="action-btn" id="shareBtn" title="Share">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                        </svg>
+                        <span>Share</span>
+                    </button>
+                    <button class="action-btn" id="saveBtn" title="Save">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                        </svg>
+                        <span>Save</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="description-section">
+            <button class="description-toggle" id="descriptionToggle">
+                <span>Description</span>
+                <svg class="chevron" viewBox="0 0 24 24">
+                    <path d="M7 10l5 5 5-5z"/>
+                </svg>
+            </button>
+            <div class="description-content hidden" id="descriptionContent">
+                <p>HTML5 video player with custom controls, playlist management, and advanced features.</p>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <div class="comments-header">
+                <h3><span id="commentCount">0</span> Comments</h3>
+            </div>
+            <div class="comment-form">
+                <input type="text" id="commentInput" placeholder="Add a comment..." maxlength="200">
+                <button id="addCommentBtn">Comment</button>
+            </div>
+            <div class="comments-list" id="commentsList">
+                <!-- Comments will be added here -->
+            </div>
+        </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Playlist Section (moved to sidebar) -->
+                <div class="playlist-section">
+            <h3>🎵 Video Playlist</h3>
+            <div class="playlist-container">
+                <div class="playlist-header">
+                    <button class="playlist-btn" id="addVideoBtn">+ Add Video</button>
+                    <button class="playlist-btn" id="shuffleBtn">🔀 Shuffle</button>
+                    <button class="playlist-btn" id="clearPlaylistBtn">🗑️ Clear</button>
+                </div>
+                <div class="playlist-list" id="playlistList">
+                    <!-- Playlist items will be added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section (compact in sidebar) -->
+        <div class="sidebar-upload">
+            <button class="upload-toggle-btn" id="uploadToggleBtn">
+                📁 Add Video
+            </button>
+            <div class="upload-dropdown hidden" id="uploadDropdown">
+                <input type="file" id="fileInput" multiple accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-msvideo,video/x-matroska,video/x-flv,video/3gpp,video/x-m4v" style="display: none;">
+                <button class="dropdown-btn" id="uploadBtn">Upload File</button>
+                <div class="url-input-compact">
+                    <input type="text" id="videoUrl" placeholder="Or paste video URL">
+                    <button id="loadVideoBtn">Load</button>
+                </div>
+                <div class="url-input-compact">
+                    <input type="text" id="magnetLink" placeholder="🧲 Paste magnet link">
+                    <button id="loadTorrentBtn">Stream</button>
+                </div>
+                <button class="dropdown-btn" id="saveMagnetBtn">💾 Save Magnet</button>
+                <button class="dropdown-btn" id="torrentHelpBtn">🧲 How to get torrents?</button>
+                <div class="saved-magnets" id="savedMagnets">
+                    <!-- Saved magnet links appear here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Torrent Help Modal -->
+        <div class="torrent-help-modal hidden" id="torrentHelpModal">
+            <div class="torrent-help-content">
+                <div class="torrent-help-header">
+                    <h3>🧲 How to Stream Torrents</h3>
+                    <button class="torrent-help-close" id="torrentHelpClose">✕</button>
+                </div>
+                <div class="torrent-help-body">
+                    <div class="help-step">
+                        <h4>Step 1: Find a Torrent</h4>
+                        <p>Visit popular torrent sites (search "movie torrents" on Google)</p>
+                        <p><strong>Popular sites:</strong> YTS, 1337x, The Pirate Bay, RARBG alternatives</p>
+                    </div>
+                    <div class="help-step">
+                        <h4>Step 2: Copy Magnet Link</h4>
+                        <p>Look for a "Magnet Link" or 🧲 icon. Right-click and copy the link.</p>
+                        <p>Magnet links start with: <code>magnet:?xt=urn:btih:...</code></p>
+                    </div>
+                    <div class="help-step">
+                        <h4>Step 3: Paste and Stream</h4>
+                        <p>Paste the magnet link in the input box above and click "Stream"!</p>
+                        <p>The video will start playing as it downloads.</p>
+                    </div>
+                    <div class="help-note">
+                        <p><strong>⚠️ Legal Notice:</strong> Only download/stream content you have rights to access. Use torrents responsibly.</p>
+                        <p><strong>💡 Tip:</strong> Look for torrents with many seeders for faster streaming!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- WebTorrent Status -->
+        <div class="torrent-status hidden" id="torrentStatus">
+            <div class="torrent-info">
+                <div class="torrent-name" id="torrentName">Loading torrent...</div>
+                <div class="torrent-progress">
+                    <div class="torrent-progress-bar">
+                        <div class="torrent-progress-fill" id="torrentProgressFill"></div>
+                    </div>
+                    <span id="torrentProgressText">0%</span>
+                </div>
+                <div class="torrent-stats">
+                    <span>⬇️ <span id="downloadSpeed">0 KB/s</span></span>
+                    <span>⬆️ <span id="uploadSpeed">0 KB/s</span></span>
+                    <span>👥 <span id="numPeers">0 peers</span></span>
+                </div>
+                <button class="torrent-close" id="closeTorrent">✕ Stop</button>
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+

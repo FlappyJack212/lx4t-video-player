@@ -1,3 +1,96 @@
+// Load video from URL params or sessionStorage
+function loadVideoFromParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoId = urlParams.get('v');
+    
+    // Sample video data (same as homepage)
+    const sampleVideos = [
+        {
+            id: 1,
+            title: "Big Buck Bunny - Blender Open Movie",
+            channel: "Blender Foundation",
+            views: "1.2M views",
+            duration: "9:56",
+            thumbnail: "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217",
+            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            description: "Big Buck Bunny is a 2008 computer-animated comedy short film featuring a giant rabbit. Produced by Blender Foundation."
+        },
+        {
+            id: 2,
+            title: "Elephant's Dream - First Blender Film",
+            channel: "Blender Foundation",
+            views: "856K views",
+            duration: "10:53",
+            thumbnail: "https://download.blender.org/demo/movies/ToS/ToS-4k-1920.jpg",
+            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            description: "Elephants Dream is the world's first open movie, made entirely with open source graphics software."
+        },
+        {
+            id: 3,
+            title: "Sintel - Third Open Movie by Blender",
+            channel: "Blender Foundation",
+            views: "2.3M views",
+            duration: "14:48",
+            thumbnail: "https://durian.blender.org/wp-content/uploads/2010/06/05.8b_comp_000800.jpg",
+            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+            description: "Sintel is an open movie from Blender Foundation. A lonely young woman searches for her lost dragon."
+        }
+    ];
+    
+    let videoData = null;
+    
+    // Try to get video from URL param
+    if (videoId) {
+        videoData = sampleVideos.find(v => v.id == videoId);
+    }
+    
+    // Try sessionStorage
+    if (!videoData) {
+        const storedVideo = sessionStorage.getItem('currentVideo');
+        if (storedVideo) {
+            try {
+                videoData = JSON.parse(storedVideo);
+            } catch (e) {
+                console.error('Error parsing stored video:', e);
+            }
+        }
+    }
+    
+    // Load video if found
+    if (videoData) {
+        setTimeout(() => {
+            const videoPlayer = document.getElementById('videoPlayer');
+            const videoTitle = document.getElementById('videoTitle');
+            const videoViews = document.getElementById('videoViews');
+            const descriptionContent = document.getElementById('descriptionContent');
+            
+            if (videoPlayer && videoData.url) {
+                videoPlayer.src = videoData.url;
+                videoPlayer.poster = videoData.thumbnail || '';
+            }
+            
+            if (videoTitle) {
+                videoTitle.textContent = videoData.title;
+            }
+            
+            if (videoViews) {
+                videoViews.textContent = videoData.views || '0 views';
+            }
+            
+            if (descriptionContent && videoData.description) {
+                descriptionContent.innerHTML = `<p>${videoData.description}</p>`;
+            }
+        }, 100);
+    }
+}
+
+// Call on page load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadVideoFromParams);
+} else {
+    loadVideoFromParams();
+}
+
 // Video Player JavaScript
 const video = document.getElementById('videoPlayer');
 // Video container defined later
