@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     populateVideoGrids();
     setupEventListeners();
     checkMobileView();
+    setupAuth();
 });
 
 // Populate video grids
@@ -389,6 +390,77 @@ document.querySelector('.brand').addEventListener('click', (e) => {
     window.location.href = 'index.html';
     window.location.reload();
 });
+
+// Setup authentication UI
+function setupAuth() {
+    const loginBtn = document.getElementById('loginNavBtn');
+    const userMenu = document.getElementById('userMenu');
+    const userBtn = document.getElementById('userBtn');
+    const userDropdown = document.getElementById('userDropdown');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // Check if user is logged in
+    const user = window.auth ? window.auth.getCurrentUser() : null;
+    
+    if (user) {
+        // User is logged in - show user menu
+        if (loginBtn) loginBtn.classList.add('hidden');
+        if (userMenu) userMenu.classList.remove('hidden');
+        
+        // Set user avatar
+        const userAvatar = document.getElementById('userAvatar');
+        const dropdownAvatar = document.getElementById('dropdownAvatar');
+        const dropdownUsername = document.getElementById('dropdownUsername');
+        const dropdownEmail = document.getElementById('dropdownEmail');
+        
+        const avatarUrl = user.avatar || '/assets/default-avatar.png';
+        if (userAvatar) userAvatar.src = avatarUrl;
+        if (dropdownAvatar) dropdownAvatar.src = avatarUrl;
+        if (dropdownUsername) dropdownUsername.textContent = user.username;
+        if (dropdownEmail) dropdownEmail.textContent = user.email;
+        
+        // Toggle dropdown
+        if (userBtn && userDropdown) {
+            userBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userDropdown.classList.toggle('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!userMenu.contains(e.target)) {
+                    userDropdown.classList.add('hidden');
+                }
+            });
+        }
+        
+        // Logout handler
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                if (window.auth) {
+                    window.auth.logout();
+                }
+            });
+        }
+    } else {
+        // User is not logged in - show login button
+        if (loginBtn) loginBtn.classList.remove('hidden');
+        if (userMenu) userMenu.classList.add('hidden');
+    }
+    
+    // Handle upload button
+    const uploadBtn = document.getElementById('uploadBtn');
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', () => {
+            if (user) {
+                window.location.href = 'studio.html';
+            } else {
+                // Redirect to login with return URL
+                window.location.href = 'login.html?redirect=studio.html';
+            }
+        });
+    }
+}
 
 // Lazy load images
 if ('IntersectionObserver' in window) {
