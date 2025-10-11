@@ -27,9 +27,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Legacy support - serve root files (old player)
 app.use(express.static(__dirname));
 
-// Redirect root to new browse page
+// Serve homepage
 app.get('/', (req, res) => {
-    res.redirect('/auth.html');
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // API Routes
